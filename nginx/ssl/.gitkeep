@@ -1,0 +1,3 @@
+# Este archivo mantiene el directorio ssl en git
+# Los certificados SSL se copian aquí después de obtenerlos con Let's Encrypt
+

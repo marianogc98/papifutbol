@@ -1,0 +1,78 @@
+{
+  "name": "papi-futbol",
+  "version": "1.0.0",
+  "description": "Aplicación web para gestión de torneo de fútbol 5 con sistema de vidas",
+  "contextFiles": [
+    ".specify/context.md",
+    "files/specify.md",
+    "files/database-setup.md"
+  ],
+  "projectStructure": {
+    "app": "app/",
+    "components": "components/",
+    "lib": "lib/",
+    "prisma": "prisma/"
+  },
+  "stack": {
+    "framework": "Next.js 14",
+    "language": "TypeScript",
+    "database": "PostgreSQL",
+    "orm": "Prisma",
+    "auth": "NextAuth.js",
+    "styling": "Tailwind CSS",
+    "ui": "shadcn/ui",
+    "validation": "Zod",
+    "forms": "React Hook Form",
+    "state": "React Query"
+  },
+  "rules": [
+    "Siempre usar TypeScript con tipos estrictos",
+    "Validar datos con Zod tanto en cliente como servidor",
+    "Usar React Query para estado y cache",
+    "Componentes de shadcn/ui para UI",
+    "Seguir estructura de carpetas de Next.js App Router",
+    "Autenticación requerida en todas las rutas /admin/*",
+    "Sistema de vidas: descontar automáticamente al perder",
+    "Formularios simples y directos para el admin",
+    "Cálculos en servidor, no en cliente",
+    "Cache con React Query: tabla 5min, goleadores 5min, fixture 1min"
+  ],
+  "patterns": {
+    "api": "RESTful con Next.js API Routes",
+    "components": "Atomic design: ui (atoms) → admin/public (molecules) → pages (organisms)",
+    "validation": "Dual: cliente (React Hook Form + Zod) y servidor (Zod)",
+    "errors": "Formato estándar: { error: string, code: string, details?: any }",
+    "auth": "NextAuth middleware en rutas protegidas"
+  },
+  "database": {
+    "provider": "postgresql",
+    "models": [
+      "User",
+      "Equipo",
+      "Jugador",
+      "Fecha",
+      "Partido",
+      "Gol",
+      "Tarjeta",
+      "Publicidad"
+    ],
+    "lifeSystem": true,
+    "manualTournament": true
+  },
+  "priorities": [
+    "Autenticación y layout admin",
+    "CRUD Equipos",
+    "CRUD Jugadores",
+    "CRUD Fechas y Partidos",
+    "Cargar resultados con sistema de vidas",
+    "Vistas públicas (tabla, fixture, goleadores)",
+    "Polish y optimizaciones"
+  ],
+  "deployment": {
+    "type": "VPS",
+    "docker": true,
+    "nginx": true,
+    "ssl": "Let's Encrypt"
+  }
+}
+
