@@ -21,5 +21,9 @@ export const fechaSchema = z.object({
   path: ['hasta'],
 })
 
-export type FechaFormData = z.infer<typeof fechaSchema>
+// Tipo para el formulario (acepta string o Date para desde y hasta)
+export type FechaFormData = Omit<z.infer<typeof fechaSchema>, 'desde' | 'hasta'> & {
+  desde?: Date | string
+  hasta?: Date | string
+}
 
