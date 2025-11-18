@@ -43,5 +43,8 @@ export const jugadorSchema = z.object({
     ),
 })
 
-export type JugadorFormData = z.infer<typeof jugadorSchema>
+// Tipo para el formulario (acepta string o Date para fechaNac)
+export type JugadorFormData = Omit<z.infer<typeof jugadorSchema>, 'fechaNac'> & {
+  fechaNac?: Date | string | null
+}
 
