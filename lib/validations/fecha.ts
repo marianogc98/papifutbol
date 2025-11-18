@@ -22,8 +22,9 @@ export const fechaSchema = z.object({
 })
 
 // Tipo para el formulario (acepta string o Date para desde y hasta)
+// Permite string vacío para los defaultValues, pero el schema validará que sean fechas válidas
 export type FechaFormData = Omit<z.infer<typeof fechaSchema>, 'desde' | 'hasta'> & {
-  desde?: Date | string
-  hasta?: Date | string
+  desde: Date | string
+  hasta: Date | string
 }
 

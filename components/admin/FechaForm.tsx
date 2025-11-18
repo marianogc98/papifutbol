@@ -30,14 +30,14 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
       ? {
           numero: fecha.numero,
           nombre: fecha.nombre || '',
-          desde: fecha.desde ? new Date(fecha.desde).toISOString().split('T')[0] : undefined,
-          hasta: fecha.hasta ? new Date(fecha.hasta).toISOString().split('T')[0] : undefined,
+          desde: fecha.desde ? new Date(fecha.desde).toISOString().split('T')[0] : '',
+          hasta: fecha.hasta ? new Date(fecha.hasta).toISOString().split('T')[0] : '',
         }
       : {
           numero: 1,
           nombre: '',
-          desde: undefined,
-          hasta: undefined,
+          desde: '',
+          hasta: '',
         },
   })
 
@@ -46,8 +46,16 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
     try {
       const submitData = {
         ...data,
-        desde: new Date(data.desde),
-        hasta: new Date(data.hasta),
+        desde: data.desde instanceof Date 
+          ? data.desde 
+          : data.desde 
+          ? new Date(data.desde)
+          : new Date(),
+        hasta: data.hasta instanceof Date 
+          ? data.hasta 
+          : data.hasta 
+          ? new Date(data.hasta)
+          : new Date(),
       }
 
       if (fecha) {
