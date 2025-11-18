@@ -58,3 +58,8 @@ nginx/ssl/*.key
 backups/*.sql
 backups/*.sql.gz
 
+# Documentation (except README.md)
+*.md
+!README.md
+
+/plantillas
