@@ -16,7 +16,13 @@ FROM base AS builder
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copiar todo el código (asegurando que prisma/ esté incluido)
 COPY . .
+
+# Verificar que prisma/schema.prisma existe antes de generar
+RUN ls -la prisma/ || (echo "ERROR: prisma directory not found!" && exit 1)
+RUN test -f prisma/schema.prisma || (echo "ERROR: prisma/schema.prisma not found!" && exit 1)
 
 # Generar Prisma Client (no necesita DATABASE_URL para esto)
 RUN npx prisma generate
