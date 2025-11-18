@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'standalone', // Para Docker
+  basePath: '/papifutbol',
   images: {
     domains: ['localhost'],
     unoptimized: false,
