@@ -9,7 +9,8 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package.json package-lock.json* ./
 # Instalar todas las dependencias incluyendo devDependencies (necesarias para el build)
-RUN npm ci
+# Deshabilitar scripts postinstall porque prisma/ aún no está copiado
+RUN npm ci --ignore-scripts
 
 # Rebuild del código fuente solo cuando se necesite
 FROM base AS builder
