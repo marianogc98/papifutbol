@@ -3,24 +3,27 @@ FROM node:18-alpine AS base
 
 # Instalar dependencias solo cuando se necesiten
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Copiar archivos de dependencias
 COPY package.json package-lock.json* ./
+# Instalar todas las dependencias incluyendo devDependencies (necesarias para el build)
 RUN npm ci
 
 # Rebuild del código fuente solo cuando se necesite
 FROM base AS builder
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generar Prisma Client
+# Generar Prisma Client (no necesita DATABASE_URL para esto)
 RUN npx prisma generate
 
 # Build de la aplicación
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV SKIP_ENV_VALIDATION=true
 RUN npm run build
 
 # Imagen de producción, copiar todos los archivos y ejecutar next
