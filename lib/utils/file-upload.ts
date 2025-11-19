@@ -6,11 +6,14 @@ import { randomBytes } from 'crypto'
 // Tipos de upload permitidos
 export type UploadType = 'equipo' | 'jugador' | 'publicidad'
 
+// Extensiones permitidas
+type AllowedExtension = '.jpg' | '.jpeg' | '.png' | '.webp'
+
 // Configuración de uploads
 const UPLOAD_CONFIG = {
   maxSize: 5 * 1024 * 1024, // 5MB
   allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
-  allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+  allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'] as AllowedExtension[],
   basePath: 'public/uploads',
 } as const
 
@@ -42,7 +45,7 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
   }
 
   // Validar extensión
-  const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
+  const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase() as AllowedExtension
   if (!UPLOAD_CONFIG.allowedExtensions.includes(extension)) {
     return {
       valid: false,
