@@ -21,6 +21,9 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copiar todo el código (asegurando que prisma/ esté incluido)
 COPY . .
 
+# Asegurar que el script de entrada tenga permisos de ejecución
+RUN chmod +x docker-entrypoint.sh || true
+
 # Verificar que prisma/schema.prisma existe antes de generar
 RUN ls -la prisma/ || (echo "ERROR: prisma directory not found!" && exit 1)
 RUN test -f prisma/schema.prisma || (echo "ERROR: prisma/schema.prisma not found!" && exit 1)
@@ -49,6 +52,14 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copiar Prisma CLI y migraciones para poder ejecutar migraciones en producción
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
+
+# Script de inicio que ejecuta migraciones y luego inicia la app
+COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 
@@ -57,5 +68,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["./docker-entrypoint.sh"]
 
