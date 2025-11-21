@@ -54,12 +54,16 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copiar Prisma CLI y migraciones para poder ejecutar migraciones en producción
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+# Copiar todo el directorio prisma (incluyendo migrations y schema)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
 
 # Script de inicio que ejecuta migraciones y luego inicia la app
 COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh
+
+# Verificar que las migraciones se copiaron (antes de cambiar usuario)
+RUN ls -la prisma/ && ls -la prisma/migrations/ || (echo "ERROR: Migraciones no encontradas" && exit 1)
 
 USER nextjs
 
