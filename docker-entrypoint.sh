@@ -12,8 +12,7 @@ if [ -z "$DATABASE_URL" ]; then
 fi
 
 # Ejecutar migraciones de Prisma antes de iniciar la aplicación
-# Prisma CLI está instalado globalmente con la misma versión que @prisma/client
-# Basado en: https://blog.jonrshar.pe/2024/Dec/24/nextjs-prisma-docker.html
+# Prisma CLI está instalado localmente en node_modules
 echo "📦 Ejecutando migraciones de base de datos..."
 npx --no-update-notifier prisma migrate deploy || {
     echo "❌ ERROR: No se pudieron ejecutar las migraciones"

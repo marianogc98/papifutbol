@@ -55,11 +55,11 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copiar todo el directorio prisma (incluyendo migrations y schema)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json* ./package-lock.json* || true
 
-# Instalar Prisma CLI globalmente con la misma versión que @prisma/client
-# Esto evita que npx intente instalar Prisma en tiempo de ejecución
-# Basado en: https://blog.jonrshar.pe/2024/Dec/24/nextjs-prisma-docker.html
-RUN npm install --global --save-exact "prisma@$(node --print 'require("./node_modules/@prisma/client/package.json").version')"
+# Instalar Prisma CLI localmente (no globalmente) para evitar problemas de permisos
+# Usamos la misma versión que @prisma/client para evitar conflictos
+RUN npm install --no-save --save-exact "prisma@$(node --print 'require("./node_modules/@prisma/client/package.json").version')"
 
 # Script de inicio
 COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
