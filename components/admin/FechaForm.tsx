@@ -30,14 +30,12 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
       ? {
           numero: fecha.numero,
           nombre: fecha.nombre || '',
-          desde: fecha.desde ? new Date(fecha.desde).toISOString().split('T')[0] : '',
-          hasta: fecha.hasta ? new Date(fecha.hasta).toISOString().split('T')[0] : '',
+          fecha: fecha.fecha ? new Date(fecha.fecha).toISOString().split('T')[0] : '',
         }
       : {
           numero: 1,
           nombre: '',
-          desde: '',
-          hasta: '',
+          fecha: '',
         },
   })
 
@@ -46,15 +44,10 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
     try {
       const submitData = {
         ...data,
-        desde: data.desde instanceof Date 
-          ? data.desde 
-          : data.desde 
-          ? new Date(data.desde)
-          : new Date(),
-        hasta: data.hasta instanceof Date 
-          ? data.hasta 
-          : data.hasta 
-          ? new Date(data.hasta)
+        fecha: data.fecha instanceof Date 
+          ? data.fecha 
+          : data.fecha 
+          ? new Date(data.fecha)
           : new Date(),
       }
 
@@ -99,34 +92,18 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="desde">Desde *</Label>
-          <Input
-            id="desde"
-            type="date"
-            {...register('desde', {
-              setValueAs: (value) => (value ? new Date(value) : undefined),
-            })}
-          />
-          {errors.desde && (
-            <p className="text-sm text-destructive">{errors.desde.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="hasta">Hasta *</Label>
-          <Input
-            id="hasta"
-            type="date"
-            {...register('hasta', {
-              setValueAs: (value) => (value ? new Date(value) : undefined),
-            })}
-          />
-          {errors.hasta && (
-            <p className="text-sm text-destructive">{errors.hasta.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="fecha">Fecha *</Label>
+        <Input
+          id="fecha"
+          type="date"
+          {...register('fecha', {
+            setValueAs: (value) => (value ? new Date(value) : undefined),
+          })}
+        />
+        {errors.fecha && (
+          <p className="text-sm text-destructive">{errors.fecha.message}</p>
+        )}
       </div>
 
       {error && (

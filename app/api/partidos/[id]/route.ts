@@ -17,8 +17,7 @@ export async function GET(
             id: true,
             numero: true,
             nombre: true,
-            desde: true,
-            hasta: true,
+            fecha: true,
           },
         },
         equipoLocal: {

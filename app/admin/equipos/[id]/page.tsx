@@ -60,7 +60,7 @@ export default function EquipoDetailPage() {
         apellido: editingJugador.apellido,
         numero: editingJugador.numero || undefined,
         fechaNac: editingJugador.fechaNac 
-          ? new Date(editingJugador.fechaNac)
+          ? new Date(editingJugador.fechaNac).toISOString().split('T')[0]
           : undefined,
         estado: editingJugador.estado as any,
         equipoId: equipoId,

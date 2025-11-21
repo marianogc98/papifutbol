@@ -105,8 +105,7 @@ export default function FechasPage() {
                 <TableRow>
                   <TableHead>Número</TableHead>
                   <TableHead>Nombre</TableHead>
-                  <TableHead>Desde</TableHead>
-                  <TableHead>Hasta</TableHead>
+                  <TableHead>Fecha</TableHead>
                   <TableHead>Partidos</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
@@ -119,8 +118,7 @@ export default function FechasPage() {
                         Fecha {fecha.numero}
                       </TableCell>
                       <TableCell>{fecha.nombre || '-'}</TableCell>
-                      <TableCell>{formatDate(fecha.desde)}</TableCell>
-                      <TableCell>{formatDate(fecha.hasta)}</TableCell>
+                      <TableCell>{formatDate(fecha.fecha)}</TableCell>
                       <TableCell>{fecha._count?.partidos || 0}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

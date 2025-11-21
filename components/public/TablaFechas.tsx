@@ -44,8 +44,7 @@ export function TablaFechas() {
           <TableRow>
             <TableHead>Fecha #</TableHead>
             <TableHead>Nombre</TableHead>
-            <TableHead>Desde</TableHead>
-            <TableHead>Hasta</TableHead>
+            <TableHead>Fecha</TableHead>
             <TableHead>Partidos</TableHead>
           </TableRow>
         </TableHeader>
@@ -55,14 +54,7 @@ export function TablaFechas() {
               <TableCell className="font-medium">{fecha.numero}</TableCell>
               <TableCell>{fecha.nombre || '-'}</TableCell>
               <TableCell>
-                {new Date(fecha.desde).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })}
-              </TableCell>
-              <TableCell>
-                {new Date(fecha.hasta).toLocaleDateString('es-ES', {
+                {new Date(fecha.fecha).toLocaleDateString('es-ES', {
                   day: '2-digit',
                   month: '2-digit',
                   year: 'numeric',

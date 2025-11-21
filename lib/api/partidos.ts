@@ -36,8 +36,7 @@ export type PartidoDetalle = Partido & {
     id: string
     numero: number
     nombre: string | null
-    desde: string
-    hasta: string
+    fecha: string
   }
   equipoLocal: {
     id: string

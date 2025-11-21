@@ -10,21 +10,14 @@ export const fechaSchema = z.object({
     .max(100, 'El nombre no puede exceder 100 caracteres')
     .optional()
     .or(z.literal('')),
-  desde: z.date({
-    required_error: 'La fecha de inicio es requerida',
+  fecha: z.date({
+    required_error: 'La fecha es requerida',
   }),
-  hasta: z.date({
-    required_error: 'La fecha de fin es requerida',
-  }),
-}).refine((data) => data.hasta >= data.desde, {
-  message: 'La fecha de fin debe ser posterior o igual a la fecha de inicio',
-  path: ['hasta'],
 })
 
-// Tipo para el formulario (acepta string o Date para desde y hasta)
-// Permite string vacío para los defaultValues, pero el schema validará que sean fechas válidas
-export type FechaFormData = Omit<z.infer<typeof fechaSchema>, 'desde' | 'hasta'> & {
-  desde: Date | string
-  hasta: Date | string
+// Tipo para el formulario (acepta string o Date para fecha)
+// Permite string vacío para los defaultValues, pero el schema validará que sea una fecha válida
+export type FechaFormData = Omit<z.infer<typeof fechaSchema>, 'fecha'> & {
+  fecha: Date | string
 }
 

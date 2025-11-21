@@ -25,10 +25,10 @@ async function main() {
 
   // Crear algunos equipos de ejemplo
   const equipos = [
-    { nombre: 'Equipo A', vidas: 3, estado: 'activo' },
-    { nombre: 'Equipo B', vidas: 3, estado: 'activo' },
+    { nombre: 'Equipo A', vidas: 2, estado: 'activo' },
+    { nombre: 'Equipo B', vidas: 2, estado: 'activo' },
     { nombre: 'Equipo C', vidas: 2, estado: 'activo' },
-    { nombre: 'Equipo D', vidas: 3, estado: 'activo' },
+    { nombre: 'Equipo D', vidas: 2, estado: 'activo' },
   ]
 
   for (const equipoData of equipos) {

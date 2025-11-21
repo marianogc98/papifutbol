@@ -125,8 +125,7 @@ export default function FechaDetailPage() {
             {fecha.nombre && ` - ${fecha.nombre}`}
           </h1>
           <p className="text-muted-foreground">
-            {new Date(fecha.desde).toLocaleDateString('es-AR')} -{' '}
-            {new Date(fecha.hasta).toLocaleDateString('es-AR')}
+            {new Date(fecha.fecha).toLocaleDateString('es-AR')}
           </p>
         </div>
         {!showForm && (

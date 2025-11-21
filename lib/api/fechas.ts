@@ -5,8 +5,7 @@ export type Fecha = {
   id: string
   numero: number
   nombre: string | null
-  desde: string
-  hasta: string
+  fecha: string
   createdAt: string
   updatedAt: string
   _count?: {

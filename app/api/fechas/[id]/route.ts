@@ -97,8 +97,7 @@ export async function PUT(
     // Convertir strings a Date si es necesario
     const dataToValidate = {
       ...body,
-      desde: body.desde ? new Date(body.desde) : body.desde,
-      hasta: body.hasta ? new Date(body.hasta) : body.hasta,
+      fecha: body.fecha ? new Date(body.fecha) : body.fecha,
     }
 
     const validatedData = fechaSchema.parse(dataToValidate)
@@ -134,8 +133,7 @@ export async function PUT(
       data: {
         numero: validatedData.numero,
         nombre: validatedData.nombre || null,
-        desde: validatedData.desde,
-        hasta: validatedData.hasta,
+        fecha: validatedData.fecha,
       },
     })
 

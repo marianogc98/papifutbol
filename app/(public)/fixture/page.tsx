@@ -47,8 +47,8 @@ export default function FixturePage() {
   // Agrupar partidos por fecha y calcular equipos con fecha libre
   // Ordenar fechas de la más nueva a la más antigua (por fecha real descendente)
   const fechasOrdenadas = fechas ? [...fechas].sort((a, b) => {
-    // Ordenar por fecha 'desde' descendente (más reciente primero)
-    return new Date(b.desde).getTime() - new Date(a.desde).getTime()
+    // Ordenar por fecha descendente (más reciente primero)
+    return new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
   }) : []
   
   const partidosPorFecha = fechasOrdenadas.map((fecha) => {
@@ -92,8 +92,7 @@ export default function FixturePage() {
                   {fecha.nombre && ` - ${fecha.nombre}`}
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(fecha.desde).toLocaleDateString('es-AR')} -{' '}
-                  {new Date(fecha.hasta).toLocaleDateString('es-AR')}
+                  {new Date(fecha.fecha).toLocaleDateString('es-AR')}
                 </p>
               </CardHeader>
               <CardContent>

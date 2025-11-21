@@ -32,7 +32,7 @@ model Equipo {
   id        String    @id @default(cuid())
   nombre    String    @unique
   escudo    String?   // URL del escudo/logo
-  vidas     Int       @default(3) // Sistema de vidas del torneo (se descuentan al perder)
+  vidas     Int       @default(2) // Sistema de vidas del torneo (se descuentan al perder)
   estado    String    @default("activo") // activo, eliminado, suspendido, descalificado
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -77,8 +77,7 @@ model Fecha {
   id     String    @id @default(cuid())
   numero Int       @unique // Número de fecha (1, 2, 3...)
   nombre String?   // Nombre opcional de la fecha
-  desde  DateTime  // Fecha de inicio
-  hasta  DateTime  // Fecha de fin
+  fecha  DateTime  // Fecha del partido
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
