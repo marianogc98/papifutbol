@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { NoticiaFormData } from '@/lib/validations/noticia'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Noticia = {
   id: string
@@ -23,7 +24,7 @@ export function useNoticias(tipo?: string) {
       if (tipo) {
         params.append('tipo', tipo)
       }
-      const response = await fetch(`/api/noticias?${params.toString()}`)
+      const response = await fetch(`?${params.toString()}`)
       if (!response.ok) throw new Error('Error al obtener noticias')
       return response.json()
     },
@@ -35,7 +36,7 @@ export function useNoticia(id: string) {
   return useQuery<Noticia>({
     queryKey: ['noticia', id],
     queryFn: async () => {
-      const response = await fetch(`/api/noticias/${id}`)
+      const response = await fetch(`/${id}`)
       if (!response.ok) throw new Error('Error al obtener noticia')
       return response.json()
     },
@@ -49,7 +50,7 @@ export function useCreateNoticia() {
 
   return useMutation({
     mutationFn: async (data: NoticiaFormData) => {
-      const response = await fetch('/api/noticias', {
+      const response = await fetch('', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -74,7 +75,7 @@ export function useUpdateNoticia() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: NoticiaFormData }) => {
-      const response = await fetch(`/api/noticias/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -100,7 +101,7 @@ export function useDeleteNoticia() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/noticias/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'DELETE',
       })
 

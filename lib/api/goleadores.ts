@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Goleador = {
   jugador: {
@@ -25,7 +26,7 @@ export function useGoleadores() {
   return useQuery<Goleador[]>({
     queryKey: ['goleadores'],
     queryFn: async () => {
-      const response = await fetch('/api/goleadores')
+      const response = await fetch(apiUrl('api/goleadores'))
       if (!response.ok) throw new Error('Error al obtener goleadores')
       return response.json()
     },

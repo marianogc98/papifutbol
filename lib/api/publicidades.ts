@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { PublicidadFormData } from '@/lib/validations/publicidad'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Publicidad = {
   id: string
@@ -28,8 +29,8 @@ export function usePublicidades(activa?: boolean) {
       }
       
       const url = params.toString() 
-        ? `/api/publicidades?${params.toString()}`
-        : '/api/publicidades'
+        ? apiUrl(`api/publicidades?${params.toString()}`)
+        : apiUrl('api/publicidades')
       
       const response = await fetch(url)
       if (!response.ok) throw new Error('Error al obtener publicidades')
@@ -43,7 +44,7 @@ export function usePublicidad(id: string) {
   return useQuery<Publicidad>({
     queryKey: ['publicidad', id],
     queryFn: async () => {
-      const response = await fetch(`/api/publicidades/${id}`)
+      const response = await fetch(apiUrl(`api/publicidades/${id}`))
       if (!response.ok) throw new Error('Error al obtener publicidad')
       return response.json()
     },
@@ -57,7 +58,7 @@ export function useCreatePublicidad() {
 
   return useMutation({
     mutationFn: async (data: PublicidadFormData) => {
-      const response = await fetch('/api/publicidades', {
+      const response = await fetch(apiUrl('api/publicidades'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -82,7 +83,7 @@ export function useUpdatePublicidad() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: PublicidadFormData }) => {
-      const response = await fetch(`/api/publicidades/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -108,7 +109,7 @@ export function useDeletePublicidad() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/publicidades/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'DELETE',
       })
 

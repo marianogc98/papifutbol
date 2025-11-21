@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { FechaFormData } from '@/lib/validations/fecha'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Fecha = {
   id: string
@@ -34,7 +35,7 @@ export function useFechas() {
   return useQuery<Fecha[]>({
     queryKey: ['fechas'],
     queryFn: async () => {
-      const response = await fetch('/api/fechas')
+      const response = await fetch(apiUrl('api/fechas'))
       if (!response.ok) throw new Error('Error al obtener fechas')
       return response.json()
     },
@@ -46,7 +47,7 @@ export function useFecha(id: string) {
   return useQuery<FechaDetalle>({
     queryKey: ['fecha', id],
     queryFn: async () => {
-      const response = await fetch(`/api/fechas/${id}`)
+      const response = await fetch(apiUrl(`api/fechas/${id}`))
       if (!response.ok) throw new Error('Error al obtener fecha')
       return response.json()
     },
@@ -60,7 +61,7 @@ export function useCreateFecha() {
 
   return useMutation({
     mutationFn: async (data: FechaFormData) => {
-      const response = await fetch('/api/fechas', {
+      const response = await fetch(apiUrl('api/fechas'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -85,7 +86,7 @@ export function useUpdateFecha() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: FechaFormData }) => {
-      const response = await fetch(`/api/fechas/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -111,7 +112,7 @@ export function useDeleteFecha() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/fechas/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'DELETE',
       })
 

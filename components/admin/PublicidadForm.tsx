@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { publicidadSchema, PublicidadFormData } from '@/lib/validations/publicidad'
+import { apiUrl } from '@/lib/utils/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -81,7 +82,7 @@ export function PublicidadForm({ publicidad, onSuccess }: PublicidadFormProps) {
         label="Imagen de Publicidad"
         currentImage={watch('imagen') || undefined}
         onImageUploaded={(path) => setValue('imagen', path)}
-        uploadEndpoint="/api/upload/publicidad"
+        uploadEndpoint={apiUrl('api/upload/publicidad')}
         entityId={publicidad?.id}
       />
       {errors.imagen && (

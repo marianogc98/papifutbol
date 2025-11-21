@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { PartidoFormData, ResultadoFormData } from '@/lib/validations/partido'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Partido = {
   id: string
@@ -76,7 +77,7 @@ export function usePartidos(fechaId?: string, estado?: string, equipoId?: string
       if (estado) params.append('estado', estado)
       if (equipoId) params.append('equipoId', equipoId)
       
-      const response = await fetch(`/api/partidos?${params.toString()}`)
+      const response = await fetch(apiUrl(`api/partidos?${params.toString()}`))
       if (!response.ok) throw new Error('Error al obtener partidos')
       return response.json()
     },
@@ -88,7 +89,7 @@ export function usePartido(id: string) {
   return useQuery<PartidoDetalle>({
     queryKey: ['partido', id],
     queryFn: async () => {
-      const response = await fetch(`/api/partidos/${id}`)
+      const response = await fetch(apiUrl(`api/partidos/${id}`))
       if (!response.ok) throw new Error('Error al obtener partido')
       return response.json()
     },
@@ -102,7 +103,7 @@ export function useCreatePartido() {
 
   return useMutation({
     mutationFn: async (data: PartidoFormData) => {
-      const response = await fetch('/api/partidos', {
+      const response = await fetch(apiUrl('api/partidos'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -128,7 +129,7 @@ export function useUpdatePartido() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: PartidoFormData }) => {
-      const response = await fetch(`/api/partidos/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -155,7 +156,7 @@ export function useDeletePartido() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/partidos/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'DELETE',
       })
 
@@ -179,7 +180,7 @@ export function useCargarResultado() {
 
   return useMutation({
     mutationFn: async ({ partidoId, data }: { partidoId: string; data: ResultadoFormData }) => {
-      const response = await fetch(`/api/resultados/${partidoId}`, {
+      const response = await fetch(apiUrl(`api/resultados/${partidoId}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

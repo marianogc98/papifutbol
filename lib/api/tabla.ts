@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { apiUrl } from '@/lib/utils/api'
 
 export type TablaEquipo = {
   id: string
@@ -20,7 +21,7 @@ export function useTabla() {
   return useQuery<TablaEquipo[]>({
     queryKey: ['tabla'],
     queryFn: async () => {
-      const response = await fetch('/api/tabla')
+      const response = await fetch(apiUrl('api/tabla'))
       if (!response.ok) throw new Error('Error al obtener tabla')
       return response.json()
     },

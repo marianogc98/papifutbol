@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { jugadorSchema, JugadorFormData } from '@/lib/validations/jugador'
+import { apiUrl } from '@/lib/utils/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -141,7 +142,7 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
           label="Foto del Jugador"
           currentImage={watch('foto') || undefined}
           onImageUploaded={(path) => setValue('foto', path)}
-          uploadEndpoint="/api/upload/jugador"
+          uploadEndpoint={apiUrl('api/upload/jugador')}
           entityId={jugador?.id}
         />
         {errors.foto && (

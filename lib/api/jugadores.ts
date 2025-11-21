@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { JugadorFormData } from '@/lib/validations/jugador'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Jugador = {
   id: string
@@ -38,7 +39,7 @@ export function useJugadores(equipoId?: string, estado?: string) {
       if (equipoId) params.append('equipoId', equipoId)
       if (estado) params.append('estado', estado)
       
-      const response = await fetch(`/api/jugadores?${params.toString()}`)
+      const response = await fetch(apiUrl(`api/jugadores?${params.toString()}`))
       if (!response.ok) throw new Error('Error al obtener jugadores')
       return response.json()
     },
@@ -50,7 +51,7 @@ export function useJugador(id: string) {
   return useQuery<JugadorDetalle>({
     queryKey: ['jugador', id],
     queryFn: async () => {
-      const response = await fetch(`/api/jugadores/${id}`)
+      const response = await fetch(apiUrl(`api/jugadores/${id}`))
       if (!response.ok) throw new Error('Error al obtener jugador')
       return response.json()
     },
@@ -64,7 +65,7 @@ export function useCreateJugador() {
 
   return useMutation({
     mutationFn: async (data: JugadorFormData) => {
-      const response = await fetch('/api/jugadores', {
+      const response = await fetch(apiUrl('api/jugadores'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -89,7 +90,7 @@ export function useUpdateJugador() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: JugadorFormData }) => {
-      const response = await fetch(`/api/jugadores/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -115,7 +116,7 @@ export function useDeleteJugador() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/jugadores/${id}`, {
+      const response = await fetch(`/${id}`, {
         method: 'DELETE',
       })
 

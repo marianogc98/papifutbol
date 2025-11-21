@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { EquipoFormData } from '@/lib/validations/equipo'
+import { apiUrl } from '@/lib/utils/api'
 
 export type Equipo = {
   id: string
@@ -37,7 +38,7 @@ export function useEquipos(estado?: string) {
       const params = new URLSearchParams()
       if (estado) params.append('estado', estado)
       
-      const response = await fetch(`/api/equipos?${params.toString()}`)
+      const response = await fetch(apiUrl(`api/equipos?${params.toString()}`))
       if (!response.ok) throw new Error('Error al obtener equipos')
       return response.json()
     },
@@ -49,7 +50,7 @@ export function useEquipo(id: string) {
   return useQuery<EquipoDetalle>({
     queryKey: ['equipo', id],
     queryFn: async () => {
-      const response = await fetch(`/api/equipos/${id}`)
+      const response = await fetch(apiUrl(`api/equipos/${id}`))
       if (!response.ok) throw new Error('Error al obtener equipo')
       return response.json()
     },
@@ -63,7 +64,7 @@ export function useCreateEquipo() {
 
   return useMutation({
     mutationFn: async (data: EquipoFormData) => {
-      const response = await fetch('/api/equipos', {
+      const response = await fetch(apiUrl('api/equipos'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -88,7 +89,7 @@ export function useUpdateEquipo() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: EquipoFormData }) => {
-      const response = await fetch(`/api/equipos/${id}`, {
+      const response = await fetch(apiUrl(`api/equipos/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -114,7 +115,7 @@ export function useDeleteEquipo() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/equipos/${id}`, {
+      const response = await fetch(apiUrl(`api/equipos/${id}`), {
         method: 'DELETE',
       })
 

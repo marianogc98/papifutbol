@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { equipoSchema, EquipoFormData } from '@/lib/validations/equipo'
+import { apiUrl } from '@/lib/utils/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -77,7 +78,7 @@ export function EquipoForm({ equipo, onSuccess }: EquipoFormProps) {
         label="Escudo del Equipo"
         currentImage={watch('escudo') || undefined}
         onImageUploaded={(path) => setValue('escudo', path)}
-        uploadEndpoint="/api/upload/equipo"
+        uploadEndpoint={apiUrl('api/upload/equipo')}
         entityId={equipo?.id}
       />
       {errors.escudo && (
