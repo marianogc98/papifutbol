@@ -55,11 +55,11 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copiar todo el directorio prisma (incluyendo migrations y schema)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json* ./package-lock.json* || true
 
-# Instalar Prisma localmente para poder ejecutar migraciones manualmente desde Coolify
-# Esto se hace como root antes de cambiar al usuario nextjs
-RUN npm install --no-save prisma@^5.7.0
+# Instalar Prisma CLI globalmente con la misma versión que @prisma/client
+# Esto evita que npx intente instalar Prisma en tiempo de ejecución
+# Basado en: https://blog.jonrshar.pe/2024/Dec/24/nextjs-prisma-docker.html
+RUN npm install --global --save-exact "prisma@$(node --print 'require("./node_modules/@prisma/client/package.json").version')"
 
 # Script de inicio
 COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
