@@ -11,11 +11,18 @@ fi
 
 # Verificar que Prisma esté disponible
 echo "🔍 Verificando Prisma..."
-if ! command -v prisma > /dev/null 2>&1; then
+# Intentar usar npx prisma primero (desde node_modules local)
+if [ -f "node_modules/prisma/package.json" ]; then
+    PRISMA_CMD="npx prisma"
+elif command -v prisma > /dev/null 2>&1; then
+    PRISMA_CMD="prisma"
+else
     echo "❌ ERROR: Prisma CLI no está disponible"
     echo "⚠️  Continuando sin migraciones..."
     exec node server.js
 fi
+
+echo "✅ Usando: $PRISMA_CMD"
 
 # Verificar que las migraciones existan
 if [ ! -d "prisma/migrations" ]; then
@@ -29,12 +36,12 @@ echo "📋 Migraciones encontradas:"
 ls -la prisma/migrations/ || true
 
 # Ejecutar migraciones con salida detallada (sin set -e para no salir si falla)
-if prisma migrate deploy; then
+if $PRISMA_CMD migrate deploy; then
     echo "✅ Migraciones aplicadas correctamente"
 else
     echo "❌ ERROR al ejecutar migraciones"
     echo "🔍 Verificando estado de migraciones..."
-    prisma migrate status || true
+    $PRISMA_CMD migrate status || true
     echo "⚠️  Continuando sin migraciones (puedes ejecutarlas manualmente después)"
 fi
 

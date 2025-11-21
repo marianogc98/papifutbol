@@ -46,9 +46,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Instalar Prisma CLI globalmente para poder ejecutar migraciones
-RUN npm install -g prisma@^5.7.0
-
 # Copiar archivos necesarios
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
@@ -58,6 +55,10 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copiar todo el directorio prisma (incluyendo migrations y schema)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json* ./package-lock.json* || true
+
+# Instalar Prisma localmente (solo la dependencia, no todo node_modules)
+RUN npm install --no-save prisma@^5.7.0 || npm install --no-save prisma@latest
 
 # Script de inicio que ejecuta migraciones y luego inicia la app
 COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
