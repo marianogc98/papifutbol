@@ -59,7 +59,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: '/papifutbol/login',
+    error: '/papifutbol/login',
   },
   session: {
     strategy: 'jwt',

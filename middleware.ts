@@ -9,8 +9,8 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Proteger rutas /admin
-        if (req.nextUrl.pathname.startsWith('/admin')) {
+        // Proteger rutas /papifutbol/admin
+        if (req.nextUrl.pathname.startsWith('/papifutbol/admin')) {
           return !!token
         }
         return true
@@ -20,6 +20,6 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/papifutbol/admin/:path*'],
 }
 

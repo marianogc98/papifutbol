@@ -13,17 +13,17 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-bold">
+            <Link href="/papifutbol" className="text-xl font-bold">
               PapiFutbol
             </Link>
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/tabla" className="text-sm hover:text-primary transition-colors">
+              <Link href="/papifutbol/tabla" className="text-sm hover:text-primary transition-colors">
                 Tabla
               </Link>
-              <Link href="/fixture" className="text-sm hover:text-primary transition-colors">
+              <Link href="/papifutbol/fixture" className="text-sm hover:text-primary transition-colors">
                 Fixture
               </Link>
-              <Link href="/goleadores" className="text-sm hover:text-primary transition-colors">
+              <Link href="/papifutbol/goleadores" className="text-sm hover:text-primary transition-colors">
                 Goleadores
               </Link>
             </div>
@@ -31,19 +31,19 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             {isAdmin ? (
               <>
-                <Link href="/admin" className="text-sm hover:text-primary transition-colors">
+                <Link href="/papifutbol/admin" className="text-sm hover:text-primary transition-colors">
                   Admin
                 </Link>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => signOut({ callbackUrl: '/' })}
+                  onClick={() => signOut({ callbackUrl: '/papifutbol' })}
                 >
                   Salir
                 </Button>
               </>
             ) : (
-              <Link href="/login" className="text-sm hover:text-primary transition-colors">
+              <Link href="/papifutbol/login" className="text-sm hover:text-primary transition-colors">
                 Admin
               </Link>
             )}
