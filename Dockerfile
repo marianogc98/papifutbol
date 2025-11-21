@@ -52,13 +52,14 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copiar Prisma CLI completo desde builder (ya está instalado y configurado ahí)
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+# Copiar .bin para tener acceso a los binarios (crear directorio si no existe)
+RUN mkdir -p ./node_modules/.bin
+COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma 2>/dev/null || true
 # Copiar todo el directorio prisma (incluyendo migrations y schema)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json* ./package-lock.json* || true
-
-# Instalar Prisma localmente (solo la dependencia, no todo node_modules)
-RUN npm install --no-save prisma@^5.7.0 || npm install --no-save prisma@latest
 
 # Script de inicio que ejecuta migraciones y luego inicia la app
 COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
@@ -66,6 +67,8 @@ RUN chmod +x ./docker-entrypoint.sh
 
 # Verificar que las migraciones se copiaron (antes de cambiar usuario)
 RUN ls -la prisma/ && ls -la prisma/migrations/ || (echo "ERROR: Migraciones no encontradas" && exit 1)
+# Verificar que Prisma esté disponible
+RUN ls -la node_modules/prisma/ || (echo "ERROR: Prisma no encontrado" && exit 1)
 
 USER nextjs
 

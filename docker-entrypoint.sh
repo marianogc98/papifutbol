@@ -11,11 +11,14 @@ fi
 
 # Verificar que Prisma esté disponible
 echo "🔍 Verificando Prisma..."
-# Intentar usar npx prisma primero (desde node_modules local)
-if [ -f "node_modules/prisma/package.json" ]; then
-    PRISMA_CMD="npx prisma"
-elif command -v prisma > /dev/null 2>&1; then
-    PRISMA_CMD="prisma"
+# Usar el binario de Prisma directamente desde node_modules
+if [ -f "node_modules/.bin/prisma" ]; then
+    PRISMA_CMD="node node_modules/.bin/prisma"
+elif [ -f "node_modules/prisma/build/index.js" ]; then
+    PRISMA_CMD="node node_modules/prisma/build/index.js"
+elif [ -d "node_modules/prisma" ]; then
+    # Si existe el directorio, intentar ejecutar directamente
+    PRISMA_CMD="node node_modules/prisma/build/index.js"
 else
     echo "❌ ERROR: Prisma CLI no está disponible"
     echo "⚠️  Continuando sin migraciones..."
