@@ -23,6 +23,8 @@ model User {
   rol       String   @default("admin") // admin, super_admin
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("user")
 }
 
 // ============================================
@@ -45,6 +47,7 @@ model Equipo {
 
   @@index([estado])
   @@index([vidas])
+  @@map("equipo")
 }
 
 // ============================================
@@ -68,6 +71,7 @@ model Jugador {
 
   @@index([equipoId])
   @@index([estado])
+  @@map("jugador")
 }
 
 // ============================================
@@ -85,6 +89,7 @@ model Fecha {
   partidos Partido[]
 
   @@index([numero])
+  @@map("fecha")
 }
 
 // ============================================
@@ -111,6 +116,7 @@ model Partido {
   @@index([estado])
   @@index([equipoLocalId])
   @@index([equipoVisitanteId])
+  @@map("partido")
 }
 
 // ============================================
@@ -131,6 +137,7 @@ model Gol {
   @@index([partidoId])
   @@index([jugadorId])
   @@index([equipoId])
+  @@map("gol")
 }
 
 // ============================================
@@ -149,6 +156,7 @@ model Publicidad {
 
   @@index([activa])
   @@index([orden])
+  @@map("publicidad")
 }
 
 // ============================================
@@ -166,5 +174,6 @@ model Noticia {
 
   @@index([tipo])
   @@index([orden])
+  @@map("noticia")
 }
 
