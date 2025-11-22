@@ -7,7 +7,7 @@ export type Goleador = {
     nombre: string
     apellido: string
     numero: number | null
-    equipo: { id: string; nombre: string } | null
+    equipo: { id: string; nombre: string; slug: string } | null
   }
   totalGoles: number
   penales: number

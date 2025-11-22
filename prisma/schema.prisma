@@ -33,6 +33,7 @@ model User {
 model Equipo {
   id        String    @id @default(cuid())
   nombre    String    @unique
+  slug      String    @unique // Slug para URLs amigables
   escudo    String?   // URL del escudo/logo
   vidas     Int       @default(2) // Sistema de vidas del torneo (se descuentan al perder)
   estado    String    @default("activo") // activo, eliminado, suspendido, descalificado
@@ -47,6 +48,7 @@ model Equipo {
 
   @@index([estado])
   @@index([vidas])
+  @@index([slug])
   @@map("equipo")
 }
 
@@ -81,6 +83,7 @@ model Fecha {
   id     String    @id @default(cuid())
   numero Int       @unique // Número de fecha (1, 2, 3...)
   nombre String?   // Nombre opcional de la fecha
+  slug   String    @unique // Slug para URLs amigables (basado en nombre o "fecha-{numero}")
   fecha  DateTime  // Fecha del partido
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -89,6 +92,7 @@ model Fecha {
   partidos Partido[]
 
   @@index([numero])
+  @@index([slug])
   @@map("fecha")
 }
 

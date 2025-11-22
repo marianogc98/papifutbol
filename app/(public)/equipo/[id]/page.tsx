@@ -15,8 +15,8 @@ import {
 
 export default function EquipoPage() {
   const params = useParams()
-  const equipoId = params.id as string
-  const { data: equipo, isLoading } = useEquipo(equipoId)
+  const slugOrId = params.id as string
+  const { data: equipo, isLoading } = useEquipo(slugOrId)
 
   const getEstadoBadge = (estado: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {

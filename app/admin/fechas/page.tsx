@@ -122,7 +122,7 @@ export default function FechasPage() {
                       <TableCell>{fecha._count?.partidos || 0}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Link href={`/admin/fechas/${fecha.id}`}>
+                          <Link href={`/admin/fechas/${fecha.slug || fecha.id}`}>
                             <Button variant="outline" size="sm">
                               Ver Partidos
                             </Button>

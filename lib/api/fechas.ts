@@ -6,6 +6,7 @@ export type Fecha = {
   id: string
   numero: number
   nombre: string | null
+  slug: string
   fecha: string
   createdAt: string
   updatedAt: string
@@ -42,16 +43,16 @@ export function useFechas() {
   })
 }
 
-// Hook para obtener una fecha por ID
-export function useFecha(id: string) {
+// Hook para obtener una fecha por slug o ID
+export function useFecha(slugOrId: string) {
   return useQuery<FechaDetalle>({
-    queryKey: ['fecha', id],
+    queryKey: ['fecha', slugOrId],
     queryFn: async () => {
-      const response = await fetch(apiUrl(`api/fechas/${id}`))
+      const response = await fetch(apiUrl(`api/fechas/${slugOrId}`))
       if (!response.ok) throw new Error('Error al obtener fecha')
       return response.json()
     },
-    enabled: !!id,
+    enabled: !!slugOrId,
   })
 }
 
@@ -86,7 +87,7 @@ export function useUpdateFecha() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: FechaFormData }) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/fechas/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -112,7 +113,7 @@ export function useDeleteFecha() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/fechas/${id}`), {
         method: 'DELETE',
       })
 

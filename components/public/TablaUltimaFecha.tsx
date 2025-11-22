@@ -74,7 +74,7 @@ export function TablaUltimaFecha() {
             <TableRow key={partido.id}>
               <TableCell>
                 <Link
-                  href={`/equipo/${partido.equipoLocal?.id}`}
+                  href={`/equipo/${partido.equipoLocal?.slug || partido.equipoLocal?.id}`}
                   className="flex items-center gap-2 hover:underline"
                 >
                   {partido.equipoLocal?.escudo && (
@@ -92,7 +92,7 @@ export function TablaUltimaFecha() {
               </TableCell>
               <TableCell className="text-right">
                 <Link
-                  href={`/equipo/${partido.equipoVisitante?.id}`}
+                  href={`/equipo/${partido.equipoVisitante?.slug || partido.equipoVisitante?.id}`}
                   className="flex items-center gap-2 justify-end hover:underline"
                 >
                   <span className="font-medium">{partido.equipoVisitante?.nombre}</span>

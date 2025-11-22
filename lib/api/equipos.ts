@@ -5,6 +5,7 @@ import { apiUrl } from '@/lib/utils/api'
 export type Equipo = {
   id: string
   nombre: string
+  slug: string
   escudo: string | null
   vidas: number
   estado: string
@@ -45,16 +46,16 @@ export function useEquipos(estado?: string) {
   })
 }
 
-// Hook para obtener un equipo por ID
-export function useEquipo(id: string) {
+// Hook para obtener un equipo por slug o ID
+export function useEquipo(slugOrId: string) {
   return useQuery<EquipoDetalle>({
-    queryKey: ['equipo', id],
+    queryKey: ['equipo', slugOrId],
     queryFn: async () => {
-      const response = await fetch(apiUrl(`api/equipos/${id}`))
+      const response = await fetch(apiUrl(`api/equipos/${slugOrId}`))
       if (!response.ok) throw new Error('Error al obtener equipo')
       return response.json()
     },
-    enabled: !!id,
+    enabled: !!slugOrId,
   })
 }
 

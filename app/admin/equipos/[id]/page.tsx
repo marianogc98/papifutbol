@@ -25,9 +25,9 @@ import Link from 'next/link'
 export default function EquipoDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const equipoId = params.id as string
-  const { data: equipo, isLoading } = useEquipo(equipoId)
-  const { data: jugadores, isLoading: jugadoresLoading } = useJugadores(equipoId)
+  const slugOrId = params.id as string
+  const { data: equipo, isLoading } = useEquipo(slugOrId)
+  const { data: jugadores, isLoading: jugadoresLoading } = useJugadores(equipo?.id || slugOrId)
   const createJugador = useCreateJugador()
   const updateJugador = useUpdateJugador()
   const deleteJugador = useDeleteJugador()
@@ -48,7 +48,7 @@ export default function EquipoDetailPage() {
       numero: undefined,
       fechaNac: undefined,
       estado: 'activo',
-      equipoId: equipoId,
+      equipoId: equipo?.id || slugOrId,
     },
   })
 
@@ -63,7 +63,7 @@ export default function EquipoDetailPage() {
           ? new Date(editingJugador.fechaNac).toISOString().split('T')[0]
           : undefined,
         estado: editingJugador.estado as any,
-        equipoId: equipoId,
+        equipoId: equipo?.id || slugOrId,
       })
       setShowForm(true)
     }
@@ -177,7 +177,7 @@ export default function EquipoDetailPage() {
               numero: undefined,
               fechaNac: undefined,
               estado: 'activo',
-              equipoId: equipoId,
+              equipoId: equipo?.id || slugOrId,
             })
           }}>
             + Agregar Jugador

@@ -4,6 +4,7 @@ import { apiUrl } from '@/lib/utils/api'
 export type TablaEquipo = {
   id: string
   nombre: string
+  slug: string
   escudo: string | null
   vidas: number
   estado: string

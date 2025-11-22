@@ -64,7 +64,7 @@ export function TablaPosiciones() {
               </TableCell>
               <TableCell>
                 <Link
-                  href={`/equipo/${equipo.id}`}
+                  href={`/equipo/${equipo.slug}`}
                   className="flex items-center gap-2 hover:underline"
                 >
                   {equipo.escudo && (
@@ -109,6 +109,7 @@ export function TablaPosiciones() {
     </div>
   )
 }
+
 
 
 

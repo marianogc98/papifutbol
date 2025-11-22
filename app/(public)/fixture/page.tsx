@@ -106,7 +106,7 @@ export default function FixturePage() {
                         <div className="flex-1 flex items-center gap-4">
                           <div className="flex-1 text-right">
                             <Link
-                              href={`/equipo/${partido.equipoLocal?.id}`}
+                              href={`/equipo/${partido.equipoLocal?.slug || partido.equipoLocal?.id}`}
                               className="font-medium hover:text-primary transition-colors"
                             >
                               {partido.equipoLocal?.nombre || '-'}
@@ -125,7 +125,7 @@ export default function FixturePage() {
                           </div>
                           <div className="flex-1 text-left">
                             <Link
-                              href={`/equipo/${partido.equipoVisitante?.id}`}
+                              href={`/equipo/${partido.equipoVisitante?.slug || partido.equipoVisitante?.id}`}
                               className="font-medium hover:text-primary transition-colors"
                             >
                               {partido.equipoVisitante?.nombre || '-'}

@@ -62,9 +62,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Generar slug único
+    const { generarSlug, generarSlugUnico } = await import('@/lib/utils/slug')
+    const slug = await generarSlugUnico(
+      validatedData.nombre,
+      async (slug) => {
+        const existe = await prisma.equipo.findUnique({ where: { slug } })
+        return !!existe
+      }
+    )
+
     const equipo = await prisma.equipo.create({
       data: {
         nombre: validatedData.nombre,
+        slug,
         escudo: validatedData.escudo || null,
         vidas: validatedData.vidas,
         estado: validatedData.estado,

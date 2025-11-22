@@ -79,7 +79,7 @@ export function TablaGoleadores() {
               <TableCell>
                 {goleador.jugador.equipo ? (
                   <Link
-                    href={`/equipo/${goleador.jugador.equipo.id}`}
+                    href={`/equipo/${goleador.jugador.equipo.slug || goleador.jugador.equipo.id}`}
                     className="hover:underline"
                   >
                     {goleador.jugador.equipo.nombre}
@@ -111,6 +111,7 @@ export function TablaGoleadores() {
     </div>
   )
 }
+
 
 
 

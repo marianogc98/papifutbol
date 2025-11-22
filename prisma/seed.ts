@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { generarSlug, generarSlugUnico } from '../lib/utils/slug'
 
 const prisma = new PrismaClient()
 
@@ -32,12 +33,24 @@ async function main() {
   ]
 
   for (const equipoData of equipos) {
+    // Generar slug único
+    const slug = await generarSlugUnico(
+      equipoData.nombre,
+      async (slug) => {
+        const existe = await prisma.equipo.findUnique({ where: { slug } })
+        return !!existe
+      }
+    )
+
     const equipo = await prisma.equipo.upsert({
       where: { nombre: equipoData.nombre },
       update: {},
-      create: equipoData,
+      create: {
+        ...equipoData,
+        slug,
+      },
     })
-    console.log(`✅ Equipo creado: ${equipo.nombre}`)
+    console.log(`✅ Equipo creado: ${equipo.nombre} (slug: ${equipo.slug})`)
   }
 
   // Crear algunos jugadores de ejemplo

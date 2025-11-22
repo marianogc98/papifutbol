@@ -3,14 +3,15 @@ import { getSession } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 import { fechaSchema } from '@/lib/validations/fecha'
 
-// GET /api/fechas/[id] - Obtener fecha por ID (público)
+// GET /api/fechas/[slug] - Obtener fecha por slug o ID (público)
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const fecha = await prisma.fecha.findUnique({
-      where: { id: params.id },
+    // Intentar buscar por slug primero, si no existe, buscar por ID (compatibilidad)
+    let fecha = await prisma.fecha.findUnique({
+      where: { slug: params.id },
       include: {
         partidos: {
           include: {
@@ -35,6 +36,36 @@ export async function GET(
         },
       },
     })
+
+    // Si no se encontró por slug, intentar por ID (compatibilidad con links antiguos)
+    if (!fecha) {
+      fecha = await prisma.fecha.findUnique({
+        where: { id: params.id },
+        include: {
+          partidos: {
+            include: {
+              equipoLocal: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  escudo: true,
+                },
+              },
+              equipoVisitante: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  escudo: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
+          },
+        },
+      })
+    }
 
     if (!fecha) {
       return NextResponse.json(
@@ -78,7 +109,7 @@ export async function GET(
   }
 }
 
-// PUT /api/fechas/[id] - Actualizar fecha (admin)
+// PUT /api/fechas/[slug] - Actualizar fecha (admin)
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -102,10 +133,16 @@ export async function PUT(
 
     const validatedData = fechaSchema.parse(dataToValidate)
 
-    // Verificar que la fecha exista
-    const fechaExistente = await prisma.fecha.findUnique({
-      where: { id: params.id },
+    // Verificar que la fecha exista (buscar por slug o ID)
+    let fechaExistente = await prisma.fecha.findUnique({
+      where: { slug: params.id },
     })
+
+    if (!fechaExistente) {
+      fechaExistente = await prisma.fecha.findUnique({
+        where: { id: params.id },
+      })
+    }
 
     if (!fechaExistente) {
       return NextResponse.json(
@@ -128,11 +165,32 @@ export async function PUT(
       }
     }
 
+    // Generar nuevo slug si cambió el nombre o número
+    const { generarSlug, generarSlugUnico } = await import('@/lib/utils/slug')
+    let nuevoSlug = fechaExistente.slug
+    
+    // Si cambió el nombre, generar slug desde el nombre
+    // Si no hay nombre, usar "fecha-{numero}"
+    const nombreParaSlug = validatedData.nombre || `Fecha ${validatedData.numero}`
+    const slugBase = generarSlug(nombreParaSlug)
+    
+    // Si cambió el nombre o número, verificar si necesitamos actualizar el slug
+    if (validatedData.nombre !== fechaExistente.nombre || validatedData.numero !== fechaExistente.numero) {
+      nuevoSlug = await generarSlugUnico(
+        nombreParaSlug,
+        async (slug) => {
+          const existe = await prisma.fecha.findUnique({ where: { slug } })
+          return !!existe && existe.id !== fechaExistente.id
+        }
+      )
+    }
+
     const fecha = await prisma.fecha.update({
-      where: { id: params.id },
+      where: { id: fechaExistente.id },
       data: {
         numero: validatedData.numero,
         nombre: validatedData.nombre || null,
+        slug: nuevoSlug,
         fecha: validatedData.fecha,
       },
     })
@@ -154,7 +212,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/fechas/[id] - Eliminar fecha (admin)
+// DELETE /api/fechas/[slug] - Eliminar fecha (admin)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -168,8 +226,9 @@ export async function DELETE(
       )
     }
 
-    const fecha = await prisma.fecha.findUnique({
-      where: { id: params.id },
+    // Buscar por slug o ID
+    let fecha = await prisma.fecha.findUnique({
+      where: { slug: params.id },
       include: {
         _count: {
           select: {
@@ -178,6 +237,19 @@ export async function DELETE(
         },
       },
     })
+
+    if (!fecha) {
+      fecha = await prisma.fecha.findUnique({
+        where: { id: params.id },
+        include: {
+          _count: {
+            select: {
+              partidos: true,
+            },
+          },
+        },
+      })
+    }
 
     if (!fecha) {
       return NextResponse.json(
@@ -195,7 +267,7 @@ export async function DELETE(
     }
 
     await prisma.fecha.delete({
-      where: { id: params.id },
+      where: { id: fecha.id },
     })
 
     return NextResponse.json({ message: 'Fecha eliminada correctamente' })

@@ -71,7 +71,7 @@ export default function TablaPage() {
                     <TableCell className="font-bold">{index + 1}</TableCell>
                     <TableCell>
                       <Link
-                        href={`/equipo/${equipo.id}`}
+                        href={`/equipo/${equipo.slug}`}
                         className="font-medium hover:text-primary transition-colors"
                       >
                         {equipo.nombre}

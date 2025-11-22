@@ -20,11 +20,13 @@ export type Partido = {
   equipoLocal?: {
     id: string
     nombre: string
+    slug: string
     escudo: string | null
   }
   equipoVisitante?: {
     id: string
     nombre: string
+    slug: string
     escudo: string | null
   }
   _count?: {
@@ -42,6 +44,7 @@ export type PartidoDetalle = Partido & {
   equipoLocal: {
     id: string
     nombre: string
+    slug: string
     escudo: string | null
     vidas: number
     estado: string
@@ -49,6 +52,7 @@ export type PartidoDetalle = Partido & {
   equipoVisitante: {
     id: string
     nombre: string
+    slug: string
     escudo: string | null
     vidas: number
     estado: string
@@ -129,7 +133,7 @@ export function useUpdatePartido() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: PartidoFormData }) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/partidos/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -156,7 +160,7 @@ export function useDeletePartido() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/partidos/${id}`), {
         method: 'DELETE',
       })
 

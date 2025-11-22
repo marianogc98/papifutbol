@@ -62,10 +62,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Generar slug desde el nombre o "fecha-{numero}"
+    const { generarSlug, generarSlugUnico } = await import('@/lib/utils/slug')
+    const nombreParaSlug = validatedData.nombre || `Fecha ${validatedData.numero}`
+    const slug = await generarSlugUnico(
+      nombreParaSlug,
+      async (slug) => {
+        const existe = await prisma.fecha.findUnique({ where: { slug } })
+        return !!existe
+      }
+    )
+
     const fecha = await prisma.fecha.create({
       data: {
         numero: validatedData.numero,
         nombre: validatedData.nombre || null,
+        slug,
         fecha: validatedData.fecha,
       },
     })

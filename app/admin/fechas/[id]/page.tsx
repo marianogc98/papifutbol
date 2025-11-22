@@ -25,9 +25,9 @@ import Link from 'next/link'
 export default function FechaDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const fechaId = params.id as string
-  const { data: fecha, isLoading } = useFecha(fechaId)
-  const { data: partidos, isLoading: partidosLoading } = usePartidos(fechaId)
+  const slugOrId = params.id as string
+  const { data: fecha, isLoading } = useFecha(slugOrId)
+  const { data: partidos, isLoading: partidosLoading } = usePartidos(fecha?.id || slugOrId)
   const { data: equipos } = useEquipos('activo')
   const createPartido = useCreatePartido()
   const deletePartido = useDeletePartido()
@@ -43,7 +43,7 @@ export default function FechaDetailPage() {
   } = useForm<PartidoFormData>({
     resolver: zodResolver(partidoSchema),
     defaultValues: {
-      fechaId: fechaId,
+      fechaId: fecha?.id || slugOrId,
       equipoLocalId: '',
       equipoVisitanteId: '',
       estado: 'pendiente',
@@ -57,10 +57,10 @@ export default function FechaDetailPage() {
     try {
       await createPartido.mutateAsync({
         ...data,
-        fechaId: fechaId,
+        fechaId: fecha?.id || slugOrId,
       })
       reset({
-        fechaId: fechaId,
+        fechaId: fecha?.id || slugOrId,
         equipoLocalId: '',
         equipoVisitanteId: '',
         estado: 'pendiente',

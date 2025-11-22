@@ -4,14 +4,15 @@ import { prisma } from '@/lib/db/prisma'
 import { equipoSchema } from '@/lib/validations/equipo'
 import { deleteFile } from '@/lib/utils/file-upload'
 
-// GET /api/equipos/[id] - Obtener equipo por ID (público)
+// GET /api/equipos/[slug] - Obtener equipo por slug o ID (público)
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const equipo = await prisma.equipo.findUnique({
-      where: { id: params.id },
+    // Intentar buscar por slug primero, si no existe, buscar por ID (compatibilidad)
+    let equipo = await prisma.equipo.findUnique({
+      where: { slug: params.id },
       include: {
         jugadores: {
           where: {
@@ -32,6 +33,31 @@ export async function GET(
       },
     })
 
+    // Si no se encontró por slug, intentar por ID (compatibilidad con links antiguos)
+    if (!equipo) {
+      equipo = await prisma.equipo.findUnique({
+        where: { id: params.id },
+        include: {
+          jugadores: {
+            where: {
+              estado: 'activo',
+            },
+            orderBy: [
+              { numero: 'asc' },
+              { apellido: 'asc' },
+            ],
+          },
+          _count: {
+            select: {
+              partidosLocal: true,
+              partidosVisitante: true,
+              goles: true,
+            },
+          },
+        },
+      })
+    }
+
     if (!equipo) {
       return NextResponse.json(
         { error: 'Equipo no encontrado' },
@@ -47,8 +73,8 @@ export async function GET(
     const partidos = await prisma.partido.findMany({
       where: {
         OR: [
-          { equipoLocalId: params.id },
-          { equipoVisitanteId: params.id },
+          { equipoLocalId: equipo.id },
+          { equipoVisitanteId: equipo.id },
         ],
         estado: 'jugado',
       },
@@ -60,7 +86,7 @@ export async function GET(
     let golesEnContra = 0
     partidos.forEach((partido) => {
       partido.goles.forEach((gol) => {
-        if (gol.equipoId !== params.id) {
+        if (gol.equipoId !== equipo.id) {
           golesEnContra++
         }
       })
@@ -86,7 +112,7 @@ export async function GET(
   }
 }
 
-// PUT /api/equipos/[id] - Actualizar equipo (admin)
+// PUT /api/equipos/[slug] - Actualizar equipo (admin)
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -103,10 +129,16 @@ export async function PUT(
     const body = await request.json()
     const validatedData = equipoSchema.parse(body)
 
-    // Verificar que el equipo exista
-    const equipoExistente = await prisma.equipo.findUnique({
-      where: { id: params.id },
+    // Verificar que el equipo exista (buscar por slug o ID)
+    let equipoExistente = await prisma.equipo.findUnique({
+      where: { slug: params.id },
     })
+
+    if (!equipoExistente) {
+      equipoExistente = await prisma.equipo.findUnique({
+        where: { id: params.id },
+      })
+    }
 
     if (!equipoExistente) {
       return NextResponse.json(
@@ -137,10 +169,24 @@ export async function PUT(
       await deleteFile(escudoAnterior)
     }
 
+    // Generar nuevo slug si cambió el nombre
+    const { generarSlug, generarSlugUnico } = await import('@/lib/utils/slug')
+    let nuevoSlug = equipoExistente.slug
+    if (validatedData.nombre !== equipoExistente.nombre) {
+      nuevoSlug = await generarSlugUnico(
+        validatedData.nombre,
+        async (slug) => {
+          const existe = await prisma.equipo.findUnique({ where: { slug } })
+          return !!existe && existe.id !== equipoExistente.id
+        }
+      )
+    }
+
     const equipo = await prisma.equipo.update({
-      where: { id: params.id },
+      where: { id: equipoExistente.id },
       data: {
         nombre: validatedData.nombre,
+        slug: nuevoSlug,
         escudo: nuevoEscudo,
         vidas: validatedData.vidas,
         estado: validatedData.estado,
@@ -164,7 +210,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/equipos/[id] - Eliminar equipo (admin)
+// DELETE /api/equipos/[slug] - Eliminar equipo (admin)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -178,8 +224,9 @@ export async function DELETE(
       )
     }
 
-    const equipo = await prisma.equipo.findUnique({
-      where: { id: params.id },
+    // Buscar por slug o ID
+    let equipo = await prisma.equipo.findUnique({
+      where: { slug: params.id },
       include: {
         _count: {
           select: {
@@ -190,6 +237,21 @@ export async function DELETE(
         },
       },
     })
+
+    if (!equipo) {
+      equipo = await prisma.equipo.findUnique({
+        where: { id: params.id },
+        include: {
+          _count: {
+            select: {
+              partidosLocal: true,
+              partidosVisitante: true,
+              jugadores: true,
+            },
+          },
+        },
+      })
+    }
 
     if (!equipo) {
       return NextResponse.json(
@@ -215,7 +277,7 @@ export async function DELETE(
     }
 
     await prisma.equipo.delete({
-      where: { id: params.id },
+      where: { id: equipo.id },
     })
 
     return NextResponse.json({ message: 'Equipo eliminado correctamente' })
