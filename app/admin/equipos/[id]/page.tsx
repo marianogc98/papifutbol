@@ -67,7 +67,7 @@ export default function EquipoDetailPage() {
       })
       setShowForm(true)
     }
-  }, [editingJugador, equipoId, reset])
+  }, [editingJugador, equipo?.id, slugOrId, reset])
 
   const onSubmit = async (data: JugadorFormData) => {
     setError('')
@@ -77,7 +77,7 @@ export default function EquipoDetailPage() {
         nombre: data.nombre,
         apellido: data.apellido,
         estado: data.estado,
-        equipoId: equipoId || null,
+        equipoId: equipo?.id || null,
       }
 
       // Agregar número solo si existe
