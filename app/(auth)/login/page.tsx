@@ -30,7 +30,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Credenciales inválidas')
       } else {
-        router.push('/papifutbol/admin')
+        router.push('/admin')
         router.refresh()
       }
     } catch (err) {

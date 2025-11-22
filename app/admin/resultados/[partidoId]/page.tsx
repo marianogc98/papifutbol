@@ -89,7 +89,7 @@ export default function ResultadoPage() {
           equipoVisitanteId: partido!.equipoVisitanteId,
         },
       })
-      router.push('/papifutbol/admin/partidos')
+      router.push('/admin/partidos')
     } catch (err: any) {
       setError(err.message || 'Error al cargar resultado')
     }

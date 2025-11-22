@@ -11,7 +11,7 @@ export default async function AdminLayout({
   const session = await getSession()
 
   if (!session) {
-    redirect('/papifutbol/login')
+    redirect('/login')
   }
 
   return (

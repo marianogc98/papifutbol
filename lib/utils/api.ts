@@ -1,9 +1,6 @@
-// Helper para construir URLs de API con basePath
-const BASE_PATH = '/papifutbol'
-
+// Helper para construir URLs de API
 export function apiUrl(path: string): string {
-  // Remover el slash inicial si existe para evitar dobles slashes
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path
-  return `${BASE_PATH}/${cleanPath}`
+  // Asegurar que el path comience con /
+  return path.startsWith('/') ? path : `/${path}`
 }
 
