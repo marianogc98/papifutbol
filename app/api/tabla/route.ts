@@ -73,6 +73,7 @@ export async function GET(request: NextRequest) {
       return {
         id: equipo.id,
         nombre: equipo.nombre,
+        slug: equipo.slug,
         escudo: equipo.escudo,
         vidas: equipo.vidas,
         estado: equipo.estado,

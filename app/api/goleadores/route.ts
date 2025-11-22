@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
               select: {
                 id: true,
                 nombre: true,
+                slug: true,
               },
             },
           },
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
         nombre: string
         apellido: string
         numero: number | null
-        equipo: { id: string; nombre: string } | null
+        equipo: { id: string; nombre: string; slug: string } | null
       }
       totalGoles: number
       penales: number
