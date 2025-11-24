@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
-export default function FixturePage() {
+export default function FechasPage() {
   const { data: fechas, isLoading: fechasLoading } = useFechas()
   const { data: partidos, isLoading: partidosLoading } = usePartidos()
   const { data: equipos, isLoading: equiposLoading } = useEquipos()
@@ -39,7 +39,7 @@ export default function FixturePage() {
   if (fechasLoading || partidosLoading || equiposLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Cargando fixture...</div>
+        <div className="text-center">Cargando fechas...</div>
       </div>
     )
   }
@@ -76,7 +76,7 @@ export default function FixturePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Fixture Completo</h1>
+        <h1 className="text-3xl font-bold mb-2">Fechas del Torneo</h1>
         <p className="text-muted-foreground">
           Todos los partidos del torneo organizados por fecha
         </p>

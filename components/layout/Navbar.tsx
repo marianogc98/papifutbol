@@ -20,8 +20,8 @@ export function Navbar() {
               <Link href="/tabla" className="text-sm hover:text-primary transition-colors">
                 Tabla
               </Link>
-              <Link href="/fixture" className="text-sm hover:text-primary transition-colors">
-                Fixture
+              <Link href="/fechas" className="text-sm hover:text-primary transition-colors">
+                Fechas
               </Link>
               <Link href="/goleadores" className="text-sm hover:text-primary transition-colors">
                 Goleadores

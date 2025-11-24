@@ -51,15 +51,8 @@ export function NoticiasSlide() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="w-full rounded-lg border bg-muted p-4 flex items-center justify-center">
-        <p className="text-muted-foreground text-sm">Cargando noticias...</p>
-      </div>
-    )
-  }
-
-  if (noticiasList.length === 0) {
+  // No mostrar nada mientras carga o si no hay noticias
+  if (isLoading || noticiasList.length === 0) {
     return null
   }
 

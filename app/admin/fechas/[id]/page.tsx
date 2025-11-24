@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useFecha } from '@/lib/api/fechas'
 import { usePartidos, useCreatePartido, useDeletePartido, Partido } from '@/lib/api/partidos'
 import { useEquipos } from '@/lib/api/equipos'
@@ -104,6 +104,23 @@ export default function FechaDetailPage() {
     }
     return labels[estado] || estado
   }
+
+  // Calcular equipos en descanso basándose en los partidos y equipos actuales
+  const equiposEnDescanso = useMemo(() => {
+    if (!partidos || !equipos) return []
+
+    // Obtener IDs de equipos que tienen partido en esta fecha
+    const equiposConPartido = new Set<string>()
+    partidos.forEach((partido) => {
+      if (partido.equipoLocalId) equiposConPartido.add(partido.equipoLocalId)
+      if (partido.equipoVisitanteId) equiposConPartido.add(partido.equipoVisitanteId)
+    })
+
+    // Equipos activos que NO tienen partido (fecha libre)
+    return equipos.filter(
+      (equipo) => equipo.estado === 'activo' && !equiposConPartido.has(equipo.id)
+    )
+  }, [partidos, equipos])
 
   if (isLoading) {
     return <div>Cargando fecha...</div>
@@ -297,14 +314,14 @@ export default function FechaDetailPage() {
       </Card>
 
       {/* Equipos con Fecha Libre */}
-      {fecha?.equiposLibres && fecha.equiposLibres.length > 0 && (
+      {equiposEnDescanso && equiposEnDescanso.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Equipos con Fecha Libre (Descanso)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {fecha.equiposLibres.map((equipo) => (
+              {equiposEnDescanso.map((equipo) => (
                 <Badge key={equipo.id} variant="outline" className="text-sm p-2">
                   {equipo.nombre}
                 </Badge>
