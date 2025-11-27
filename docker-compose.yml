@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: papifutbol_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-papifutbol}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "127.0.0.1:5432:5432"  # Solo acceso local
+    networks:
+      - papifutbol_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Next.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: papifutbol_app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-papifutbol}?schema=public
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NODE_ENV: production
+    ports:
+      - "127.0.0.1:3000:3000"  # Solo acceso local, nginx hace proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - papifutbol_network
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: papifutbol_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./public/index.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - app
+    networks:
+      - papifutbol_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  papifutbol_network:
+    driver: bridge
+

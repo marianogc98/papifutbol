@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // Deshabilitar shadow database para evitar problemas de permisos
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// ============================================
+// MODELO: User (Administradores)
+// ============================================
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hash bcrypt
+  nombre    String
+  rol       String   @default("admin") // admin, super_admin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user")
+}
+
+// ============================================
+// MODELO: Equipo
+// ============================================
+model Equipo {
+  id        String    @id @default(cuid())
+  nombre    String    @unique
+  slug      String    @unique // Slug para URLs amigables
+  escudo    String?   // URL del escudo/logo
+  vidas     Int       @default(2) // Sistema de vidas del torneo (se descuentan al perder)
+  estado    String    @default("activo") // activo, eliminado, suspendido, descalificado
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relaciones
+  jugadores Jugador[]
+  partidosLocal Partido[] @relation("EquipoLocal")
+  partidosVisitante Partido[] @relation("EquipoVisitante")
+  goles     Gol[]
+
+  @@index([estado])
+  @@index([vidas])
+  @@index([slug])
+  @@map("equipo")
+}
+
+// ============================================
+// MODELO: Jugador
+// ============================================
+model Jugador {
+  id       String    @id @default(cuid())
+  nombre   String
+  apellido String
+  numero   Int?      // Número de camiseta (opcional)
+  fechaNac DateTime? // Fecha de nacimiento (opcional)
+  foto     String?   // URL de la foto del jugador
+  estado   String    @default("activo") // activo, lesionado, suspendido, dado_de_baja
+  equipoId String?
+  equipo   Equipo?   @relation(fields: [equipoId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  goles    Gol[]
+
+  @@index([equipoId])
+  @@index([estado])
+  @@map("jugador")
+}
+
+// ============================================
+// MODELO: Fecha
+// ============================================
+model Fecha {
+  id     String    @id @default(cuid())
+  numero Int       @unique // Número de fecha (1, 2, 3...)
+  nombre String?   // Nombre opcional de la fecha
+  slug   String    @unique // Slug para URLs amigables (basado en nombre o "fecha-{numero}")
+  fecha  DateTime  // Fecha del partido
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  partidos Partido[]
+
+  @@index([numero])
+  @@index([slug])
+  @@map("fecha")
+}
+
+// ============================================
+// MODELO: Partido
+// ============================================
+model Partido {
+  id        String   @id @default(cuid())
+  fechaId   String
+  fecha     Fecha    @relation(fields: [fechaId], references: [id], onDelete: Cascade)
+  equipoLocalId String
+  equipoLocal Equipo @relation("EquipoLocal", fields: [equipoLocalId], references: [id])
+  equipoVisitanteId String
+  equipoVisitante Equipo @relation("EquipoVisitante", fields: [equipoVisitanteId], references: [id])
+  golesLocal Int @default(0)
+  golesVisitante Int @default(0)
+  estado    String   @default("pendiente") // pendiente, jugado, suspendido, cancelado, no_se_presento_local, no_se_presento_visitante
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  goles    Gol[]
+
+  @@index([fechaId])
+  @@index([estado])
+  @@index([equipoLocalId])
+  @@index([equipoVisitanteId])
+  @@map("partido")
+}
+
+// ============================================
+// MODELO: Gol
+// ============================================
+model Gol {
+  id        String   @id @default(cuid())
+  partidoId String
+  partido   Partido  @relation(fields: [partidoId], references: [id], onDelete: Cascade)
+  jugadorId String
+  jugador   Jugador  @relation(fields: [jugadorId], references: [id], onDelete: Cascade)
+  equipoId  String
+  equipo    Equipo   @relation(fields: [equipoId], references: [id], onDelete: Cascade)
+  esPenal   Boolean  @default(false)
+  esAutogol Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([partidoId])
+  @@index([jugadorId])
+  @@index([equipoId])
+  @@map("gol")
+}
+
+// ============================================
+// MODELO: Publicidad
+// ============================================
+model Publicidad {
+  id        String   @id @default(cuid())
+  titulo    String
+  imagen    String?  // URL de la imagen
+  url       String?   // URL de destino
+  activa    Boolean   @default(true)
+  posicion  String?   // banner, sidebar, etc.
+  orden     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([activa])
+  @@index([orden])
+  @@map("publicidad")
+}
+
+// ============================================
+// MODELO: Noticia (Novedades del torneo)
+// ============================================
+model Noticia {
+  id        String   @id @default(cuid())
+  titulo    String
+  contenido String?  // Descripción o contenido de la noticia
+  tipo      String   @default("informacion") // informacion, urgente, otra
+  url       String?   // URL de destino (opcional)
+  orden     Int       @default(0) // Orden de aparición en el slide
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([tipo])
+  @@index([orden])
+  @@map("noticia")
+}
+
