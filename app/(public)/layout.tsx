@@ -8,7 +8,7 @@ export default function PublicLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f2f2f2' }}>
       <Navbar />
       <PublicidadBanner posicion="header" className="w-full border-b" />
       <main className="flex-1 container mx-auto px-4 py-8">

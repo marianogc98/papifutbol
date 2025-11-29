@@ -7,63 +7,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export default function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="space-y-8">
       {/* Banner de publicidad principal */}
       <div className="w-full">
         <PublicidadBanner posicion="banner" className="w-full rounded-lg overflow-hidden" />
       </div>
 
-      {/* Título principal */}
+      {/* Título principal 
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">PapiFutbol</h1>
         <p className="text-muted-foreground text-lg">
           Torneo de Fútbol 5 con Sistema de Vidas
         </p>
       </div>
-
+*/}
       {/* Slide de Noticias/Novedades */}
       <div className="w-full">
         <NoticiasSlide />
       </div>
 
       {/* Tabla de Posiciones - La más importante */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Tabla de Posiciones</CardTitle>
-          <CardDescription>
-            Clasificación general del torneo con estadísticas completas
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TablaPosiciones />
-        </CardContent>
-      </Card>
+      <TablaPosiciones />
 
       {/* Tabla de Partidos de la Última Fecha */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Última Fecha</CardTitle>
-          <CardDescription>
-            Resultados de los partidos de la última fecha jugada
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TablaUltimaFecha />
-        </CardContent>
-      </Card>
+
+      <TablaUltimaFecha />
 
       {/* Tabla de Goleadores */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Tabla de Goleadores</CardTitle>
-          <CardDescription>
-            Ranking de los máximos goleadores del torneo
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TablaGoleadores />
-        </CardContent>
-      </Card>
+      <TablaGoleadores />
 
       {/* Publicidad lateral (si hay) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

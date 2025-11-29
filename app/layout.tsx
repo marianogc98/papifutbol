@@ -7,8 +7,11 @@ import Umami from '@/components/Umami'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PapiFutbol - Torneo de Fútbol 5',
+  title: 'Papi Fútbol - Torneo 2025',
   description: 'Sistema de gestión de torneo de fútbol 5 con sistema de vidas',
+  icons: {
+    icon: '/images/favicon.ico',
+  },
 }
 
 export default function RootLayout({

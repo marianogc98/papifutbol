@@ -21,6 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Link from 'next/link'
+import { CustomImage } from '@/components/ui/Image'
 
 export default function EquipoDetailPage() {
   const params = useParams()
@@ -150,10 +151,11 @@ export default function EquipoDetailPage() {
               <Button variant="ghost" size="sm">← Volver</Button>
             </Link>
             {equipo.escudo && (
-              <img
+              <CustomImage
                 src={equipo.escudo}
                 alt={equipo.nombre}
-                className="w-16 h-16 object-contain"
+                width={64}
+                height={64}
               />
             )}
             <div>

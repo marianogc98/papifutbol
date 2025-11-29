@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth/session'
 import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
 import { AdminNav } from '@/components/admin/AdminNav'
 
 export default async function AdminLayout({
@@ -15,9 +16,9 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f2f2f2' }}>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Panel de Administración</h1>
           <p className="text-muted-foreground">
@@ -26,7 +27,8 @@ export default async function AdminLayout({
         </div>
         <AdminNav />
         {children}
-      </div>
+      </main>
+      <Footer />
     </div>
   )
 }

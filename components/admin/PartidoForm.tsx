@@ -5,17 +5,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { partidoSchema, PartidoFormData } from '@/lib/validations/partido'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import { useCreatePartido, useUpdatePartido, Partido } from '@/lib/api/partidos'
 import { useFechas } from '@/lib/api/fechas'
 import { useEquipos } from '@/lib/api/equipos'
 import { useState } from 'react'
+import { utcToTimeString } from '@/lib/utils/date'
 
 interface PartidoFormProps {
   partido?: Partido
+  fechaId?: string // Fecha pre-seleccionada (cuando se crea desde la página de fechas)
   onSuccess?: () => void
 }
 
-export function PartidoForm({ partido, onSuccess }: PartidoFormProps) {
+export function PartidoForm({ partido, fechaId: propFechaId, onSuccess }: PartidoFormProps) {
   const [error, setError] = useState<string>('')
   const createPartido = useCreatePartido()
   const updatePartido = useUpdatePartido()
@@ -28,6 +31,7 @@ export function PartidoForm({ partido, onSuccess }: PartidoFormProps) {
     formState: { errors, isSubmitting },
     reset,
     watch,
+    getValues,
   } = useForm<PartidoFormData>({
     resolver: zodResolver(partidoSchema),
     defaultValues: partido
@@ -36,24 +40,40 @@ export function PartidoForm({ partido, onSuccess }: PartidoFormProps) {
           equipoLocalId: partido.equipoLocalId,
           equipoVisitanteId: partido.equipoVisitanteId,
           estado: partido.estado as any,
+          horaLocal: partido.fechaHora ? utcToTimeString(partido.fechaHora) : '',
         }
       : {
-          fechaId: '',
+          fechaId: propFechaId || '',
           equipoLocalId: '',
           equipoVisitanteId: '',
           estado: 'pendiente',
+          horaLocal: '',
         },
   })
 
   const equipoLocalId = watch('equipoLocalId')
+  const fechaId = watch('fechaId')
+  // Usar la fecha del prop si existe, o la del form
+  const fechaIdFinal = propFechaId || fechaId || (partido?.fechaId)
 
   const onSubmit = async (data: PartidoFormData) => {
     setError('')
     try {
+      // Obtener el valor directamente del input (por si react-hook-form no lo captura)
+      const horaLocalValue = (document.getElementById('horaLocal') as HTMLInputElement)?.value || data.horaLocal || ''
+      
+      // El endpoint combinará la fecha de la fecha seleccionada con la hora
+      const submitData: PartidoFormData = {
+        ...data,
+        // Usar fechaId del prop si existe, o del form
+        fechaId: propFechaId || data.fechaId || partido?.fechaId || '',
+        // Usar el valor del DOM si el form no lo capturó
+        horaLocal: horaLocalValue && horaLocalValue.trim() !== '' ? horaLocalValue.trim() : undefined,
+      }
       if (partido) {
-        await updatePartido.mutateAsync({ id: partido.id, data })
+        await updatePartido.mutateAsync({ id: partido.id, data: submitData })
       } else {
-        await createPartido.mutateAsync(data)
+        await createPartido.mutateAsync(submitData)
       }
       reset()
       onSuccess?.()
@@ -64,22 +84,22 @@ export function PartidoForm({ partido, onSuccess }: PartidoFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* No mostrar campo de fecha: se toma del contexto o del partido existente */}
+
       <div className="space-y-2">
-        <Label htmlFor="fechaId">Fecha *</Label>
-        <select
-          id="fechaId"
-          {...register('fechaId')}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <option value="">Seleccionar fecha</option>
-          {fechas?.map((fecha) => (
-            <option key={fecha.id} value={fecha.id}>
-              Fecha {fecha.numero} {fecha.nombre ? `- ${fecha.nombre}` : ''}
-            </option>
-          ))}
-        </select>
-        {errors.fechaId && (
-          <p className="text-sm text-destructive">{errors.fechaId.message}</p>
+        <Label htmlFor="horaLocal">Hora del Partido (opcional)</Label>
+        <Input
+          id="horaLocal"
+          type="time"
+          {...register('horaLocal', {
+            setValueAs: (value) => value || undefined, // Convertir string vacío a undefined
+          })}
+        />
+        <p className="text-sm text-muted-foreground">
+          Selecciona la hora (se guardará en UTC 00:00). Se combinará con la fecha del partido.
+        </p>
+        {errors.fechaHora && (
+          <p className="text-sm text-destructive">{errors.fechaHora.message}</p>
         )}
       </div>
 

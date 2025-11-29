@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import { useEquipo } from '@/lib/api/equipos'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { CustomImage } from '@/components/ui/Image'
 import {
   Table,
   TableBody,
@@ -49,10 +50,11 @@ export default function EquipoPage() {
       <div className="mb-6">
         <div className="flex items-center gap-4 mb-4">
           {equipo.escudo && (
-            <img
+            <CustomImage
               src={equipo.escudo}
               alt={equipo.nombre}
-              className="w-20 h-20 object-contain"
+              width={80}
+              height={80}
             />
           )}
           <div>

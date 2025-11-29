@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 import { fechaSchema } from '@/lib/validations/fecha'
+import { dateToUTC } from '@/lib/utils/date'
 
 // GET /api/fechas - Listar fechas (público)
 export async function GET(request: NextRequest) {
@@ -42,10 +43,28 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
-    // Convertir strings a Date si es necesario
+    // Convertir fecha a UTC 00:00:00 (solo fecha, sin hora)
+    let fechaDate: Date | undefined
+    if (body.fecha) {
+      if (typeof body.fecha === 'string') {
+        // Si viene como string "YYYY-MM-DD", convertir a UTC 00:00:00
+        if (body.fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          fechaDate = dateToUTC(body.fecha)
+        } else {
+          // Si viene como ISO string completo, extraer solo la fecha y convertir a UTC 00:00
+          const date = new Date(body.fecha)
+          fechaDate = dateToUTC(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
+        }
+      } else {
+        // Si ya es Date, extraer solo la fecha y convertir a UTC 00:00
+        const date = new Date(body.fecha)
+        fechaDate = dateToUTC(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
+      }
+    }
+    
     const dataToValidate = {
       ...body,
-      fecha: body.fecha ? new Date(body.fecha) : body.fecha,
+      fecha: fechaDate,
     }
 
     const validatedData = fechaSchema.parse(dataToValidate)

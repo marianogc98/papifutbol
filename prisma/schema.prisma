@@ -103,13 +103,14 @@ model Partido {
   id        String   @id @default(cuid())
   fechaId   String
   fecha     Fecha    @relation(fields: [fechaId], references: [id], onDelete: Cascade)
+  fechaHora DateTime? // Fecha y hora del partido (en UTC, opcional)
   equipoLocalId String
   equipoLocal Equipo @relation("EquipoLocal", fields: [equipoLocalId], references: [id])
   equipoVisitanteId String
   equipoVisitante Equipo @relation("EquipoVisitante", fields: [equipoVisitanteId], references: [id])
   golesLocal Int @default(0)
   golesVisitante Int @default(0)
-  estado    String   @default("pendiente") // pendiente, jugado, suspendido, cancelado, no_se_presento_local, no_se_presento_visitante
+  estado    String   @default("pendiente") // pendiente, jugando, jugado, suspendido, cancelado, no_se_presento_local, no_se_presento_visitante
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -120,6 +121,7 @@ model Partido {
   @@index([estado])
   @@index([equipoLocalId])
   @@index([equipoVisitanteId])
+  @@index([fechaHora])
   @@map("partido")
 }
 

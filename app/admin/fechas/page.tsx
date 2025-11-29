@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useFechas, useDeleteFecha, Fecha } from '@/lib/api/fechas'
 import { FechaForm } from '@/components/admin/FechaForm'
+import { formatDateUTC } from '@/lib/utils/date'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -60,7 +61,8 @@ export default function FechasPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-AR')
+    // Usar formatDateUTC para mostrar solo el día sin conversión de zona horaria
+    return formatDateUTC(dateString)
   }
 
   if (isLoading) {

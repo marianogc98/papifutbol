@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { partidoSchema, PartidoFormData } from '@/lib/validations/partido'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -21,6 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Link from 'next/link'
+import { formatDateTimeUTC, formatDateUTC } from '@/lib/utils/date'
 
 export default function FechaDetailPage() {
   const params = useParams()
@@ -40,6 +42,7 @@ export default function FechaDetailPage() {
     formState: { errors, isSubmitting },
     reset,
     watch,
+    getValues,
   } = useForm<PartidoFormData>({
     resolver: zodResolver(partidoSchema),
     defaultValues: {
@@ -47,6 +50,7 @@ export default function FechaDetailPage() {
       equipoLocalId: '',
       equipoVisitanteId: '',
       estado: 'pendiente',
+      horaLocal: '',
     },
   })
 
@@ -55,15 +59,23 @@ export default function FechaDetailPage() {
   const onSubmit = async (data: PartidoFormData) => {
     setError('')
     try {
-      await createPartido.mutateAsync({
+      // Obtener el valor directamente del input (por si react-hook-form no lo captura)
+      const horaLocalValue = (document.getElementById('horaLocal') as HTMLInputElement)?.value || data.horaLocal || ''
+      
+      // El endpoint combinará la fecha de la fecha con la hora seleccionada
+      const submitData: PartidoFormData = {
         ...data,
         fechaId: fecha?.id || slugOrId,
-      })
+        // Usar el valor del DOM si el form no lo capturó
+        horaLocal: horaLocalValue && horaLocalValue.trim() !== '' ? horaLocalValue.trim() : undefined,
+      }
+      await createPartido.mutateAsync(submitData)
       reset({
         fechaId: fecha?.id || slugOrId,
         equipoLocalId: '',
         equipoVisitanteId: '',
         estado: 'pendiente',
+        horaLocal: undefined,
       })
       setShowForm(false)
     } catch (err: any) {
@@ -142,7 +154,7 @@ export default function FechaDetailPage() {
             {fecha.nombre && ` - ${fecha.nombre}`}
           </h1>
           <p className="text-muted-foreground">
-            {new Date(fecha.fecha).toLocaleDateString('es-AR')}
+            {formatDateUTC(fecha.fecha)}
           </p>
         </div>
         {!showForm && (
@@ -200,6 +212,23 @@ export default function FechaDetailPage() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="horaLocal">Hora del Partido (opcional)</Label>
+                <Input
+                  id="horaLocal"
+                  type="time"
+                  {...register('horaLocal', {
+                    setValueAs: (value) => value || undefined, // Convertir string vacío a undefined
+                  })}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Selecciona la hora (se guardará en UTC 00:00). Se combinará con la fecha de esta fecha.
+                </p>
+                {errors.fechaHora && (
+                  <p className="text-sm text-destructive">{errors.fechaHora.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="estado">Estado *</Label>
                 <select
                   id="estado"
@@ -253,6 +282,7 @@ export default function FechaDetailPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Hora</TableHead>
                   <TableHead>Local</TableHead>
                   <TableHead>Visitante</TableHead>
                   <TableHead>Resultado</TableHead>
@@ -264,6 +294,9 @@ export default function FechaDetailPage() {
                 {partidos && partidos.length > 0 ? (
                   partidos.map((partido) => (
                     <TableRow key={partido.id}>
+                      <TableCell>
+                        {partido.fechaHora ? formatDateTimeUTC(partido.fechaHora) : '-'}
+                      </TableCell>
                       <TableCell className="font-medium">
                         {partido.equipoLocal?.nombre || '-'}
                       </TableCell>

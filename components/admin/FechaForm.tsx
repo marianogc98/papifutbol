@@ -42,13 +42,13 @@ export function FechaForm({ fecha, onSuccess }: FechaFormProps) {
   const onSubmit = async (data: FechaFormData) => {
     setError('')
     try {
+      // La fecha viene como string "YYYY-MM-DD" del input type="date"
+      // El endpoint la convertirá a UTC 00:00:00
       const submitData = {
         ...data,
         fecha: data.fecha instanceof Date 
-          ? data.fecha 
-          : data.fecha 
-          ? new Date(data.fecha)
-          : new Date(),
+          ? data.fecha.toISOString().split('T')[0] // Convertir Date a string YYYY-MM-DD
+          : data.fecha || '',
       }
 
       if (fecha) {

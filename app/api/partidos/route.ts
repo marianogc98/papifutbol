@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 import { partidoSchema } from '@/lib/validations/partido'
+import { combineFechaAndHoraToUTC } from '@/lib/utils/date'
 
 // GET /api/partidos - Listar partidos (público)
 export async function GET(request: NextRequest) {
@@ -47,6 +48,21 @@ export async function GET(request: NextRequest) {
             escudo: true,
           },
         },
+        goles: {
+          include: {
+            jugador: {
+              select: {
+                id: true,
+                nombre: true,
+                apellido: true,
+                numero: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
         _count: {
           select: {
             goles: true,
@@ -54,6 +70,7 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: [
+        { fechaHora: 'asc' },
         { fecha: { numero: 'asc' } },
         { createdAt: 'asc' },
       ],
@@ -81,9 +98,41 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const validatedData = partidoSchema.parse(body)
+    
+    // Si viene horaLocal, combinar con la fecha de la fecha seleccionada
+    // IMPORTANTE: Esto debe hacerse ANTES de la validación con Zod
+    let fechaHoraUTC: Date | undefined
+    if (body.horaLocal && body.horaLocal !== '' && body.fechaId) {
+      // Obtener la fecha de la fecha seleccionada
+      const fecha = await prisma.fecha.findUnique({
+        where: { id: body.fechaId },
+      })
+      
+      if (fecha) {
+        // Combinar la fecha (en UTC 00:00) con la hora seleccionada (guardada directamente en UTC)
+        fechaHoraUTC = combineFechaAndHoraToUTC(fecha.fecha, body.horaLocal)
+      }
+    } else if (body.fechaHora) {
+      // Si viene fechaHora directamente (para compatibilidad), usarla
+      fechaHoraUTC = typeof body.fechaHora === 'string' ? new Date(body.fechaHora) : body.fechaHora
+    }
+    
+    // Preparar datos para validación (sin horaLocal, ya que no está en el schema)
+    const dataToValidate: any = {
+      fechaId: body.fechaId,
+      equipoLocalId: body.equipoLocalId,
+      equipoVisitanteId: body.equipoVisitanteId,
+      estado: body.estado,
+    }
+    
+    // Solo incluir fechaHora si tiene valor (Zod puede eliminar undefined)
+    if (fechaHoraUTC !== undefined) {
+      dataToValidate.fechaHora = fechaHoraUTC
+    }
+    
+    const validatedData = partidoSchema.parse(dataToValidate)
 
-    // Verificar que la fecha exista
+    // Verificar que la fecha exista (ya la obtuvimos antes si había horaLocal)
     const fecha = await prisma.fecha.findUnique({
       where: { id: validatedData.fechaId },
     })
@@ -111,6 +160,7 @@ export async function POST(request: NextRequest) {
     const partido = await prisma.partido.create({
       data: {
         fechaId: validatedData.fechaId,
+        fechaHora: validatedData.fechaHora || null,
         equipoLocalId: validatedData.equipoLocalId,
         equipoVisitanteId: validatedData.equipoVisitanteId,
         estado: validatedData.estado,

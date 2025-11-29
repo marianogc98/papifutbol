@@ -2,15 +2,6 @@
 
 import { useGoleadores } from '@/lib/api/goleadores'
 import Link from 'next/link'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 
 export function TablaGoleadores() {
   const { data: goleadores, isLoading, error } = useGoleadores()
@@ -33,81 +24,88 @@ export function TablaGoleadores() {
 
   if (!goleadores || goleadores.length === 0) {
     return (
-      <div className="flex justify-center items-center py-8">
-        <p className="text-muted-foreground">No hay goleadores registrados</p>
+      <div className="w-full">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold">Tabla de Goleadores</h2>
+        </div>
+        <div className="bg-white border rounded-xl p-8 text-center">
+          <p className="text-muted-foreground">No hay goleadores registrados</p>
+        </div>
       </div>
     )
   }
 
   // Ordenar por total de goles descendente
   const goleadoresOrdenados = [...goleadores].sort((a, b) => {
-    if (b.totalGoles !== a.totalGoles) return b.totalGoles - a.totalGoles
-    return b.penales - a.penales
+    return b.totalGoles - a.totalGoles
   })
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12 text-center">Pos</TableHead>
-            <TableHead>Jugador</TableHead>
-            <TableHead>Equipo</TableHead>
-            <TableHead className="text-center">Goles</TableHead>
-            <TableHead className="text-center">Penales</TableHead>
-            <TableHead className="text-center">Total</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {goleadoresOrdenados.map((goleador, index) => (
-            <TableRow key={goleador.jugador.id}>
-              <TableCell className="text-center font-bold">
-                {index + 1}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  {goleador.jugador.numero && (
-                    <Badge variant="outline" className="w-8 h-8 flex items-center justify-center">
-                      {goleador.jugador.numero}
-                    </Badge>
-                  )}
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold">Tabla de Goleadores</h2>
+      </div>
+
+      <div className="bg-white border rounded-xl overflow-hidden shadow-lg">
+        <table className="w-full">
+          <thead className="bg-[#f3f3f3] border-b">
+            <tr>
+              <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider w-12">
+                Pos
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                Jugador
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                Equipo
+              </th>
+              <th className="px-6 py-4 text-center text-xs font-medium uppercase tracking-wider w-24">
+                Goles
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {goleadoresOrdenados.map((goleador, index) => (
+              <tr key={goleador.jugador.id} className="border-b hover:bg-[#f3f3f3] transition-colors">
+                <td className="px-6 py-4 text-center font-bold">
+                  {index + 1}
+                </td>
+                <td className="px-6 py-4">
                   <span className="font-medium">
                     {goleador.jugador.nombre} {goleador.jugador.apellido}
                   </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {goleador.jugador.equipo ? (
-                  <Link
-                    href={`/equipo/${goleador.jugador.equipo.slug || goleador.jugador.equipo.id}`}
-                    className="hover:underline"
-                  >
-                    {goleador.jugador.equipo.nombre}
-                  </Link>
-                ) : (
-                  <span className="text-muted-foreground">Sin equipo</span>
-                )}
-              </TableCell>
-              <TableCell className="text-center font-medium">
-                {goleador.totalGoles - goleador.penales}
-              </TableCell>
-              <TableCell className="text-center">
-                {goleador.penales > 0 && (
-                  <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
-                    {goleador.penales}
-                  </Badge>
-                )}
-                {goleador.penales === 0 && <span className="text-muted-foreground">0</span>}
-              </TableCell>
-              <TableCell className="text-center">
-                <Badge variant="default" className="font-bold text-lg">
-                  {goleador.totalGoles}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </td>
+                <td className="px-6 py-4">
+                  {goleador.jugador.equipo ? (
+                    <Link
+                      href={`/equipo/${goleador.jugador.equipo.slug || goleador.jugador.equipo.id}`}
+                      className="hover:opacity-80 transition-opacity group flex items-center gap-2"
+                    >
+                      {goleador.jugador.equipo.escudo && (
+                        <img
+                          src={goleador.jugador.equipo.escudo}
+                          alt={goleador.jugador.equipo.nombre}
+                          className="w-6 h-6 object-contain"
+                        />
+                      )}
+                      <span className="group-hover:text-[#852024] transition-colors">
+                        {goleador.jugador.equipo.nombre}
+                      </span>
+                    </Link>
+                  ) : (
+                    <span className="text-muted-foreground">Sin equipo</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <span className="text-l font-bold text-black">
+                    {goleador.totalGoles}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

@@ -8,49 +8,139 @@ export function Navbar() {
   const { data: session } = useSession()
   const isAdmin = !!session
 
+  const navLinks = [
+    { href: '/', label: 'Inicio' },
+    { href: '/tabla', label: 'Tabla' },
+    { href: '/fechas', label: 'Fechas' },
+    { href: '/goleadores', label: 'Goleadores' },
+  ]
+
   return (
-    <nav className="border-b bg-background">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-bold">
-              PapiFutbol
+    <>
+      {/* Header Principal - Desktop */}
+      <header
+        className="hidden md:block rounded-xl mx-4 mt-4 mb-6"
+        style={{ backgroundColor: '#852024' }}
+      >
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo y Nombre del Club */}
+            <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+              <div className="bg-white rounded-xl p-2">
+                <img
+                  src="/images/logo.png"
+                  alt="Papi Fútbol"
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+              <div className="text-white">
+                <h1 className="text-xl font-bold">Papi Fútbol</h1>
+                <p className="text-sm opacity-90">Torneo 2025</p>
+              </div>
             </Link>
-            <div className="hidden md:flex items-center gap-4">
-              <Link href="/tabla" className="text-sm hover:text-primary transition-colors">
-                Tabla
-              </Link>
-              <Link href="/fechas" className="text-sm hover:text-primary transition-colors">
-                Fechas
-              </Link>
-              <Link href="/goleadores" className="text-sm hover:text-primary transition-colors">
-                Goleadores
-              </Link>
-            </div>
+
+            {/* Navegación Desktop */}
+            <nav className="flex items-center gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-white text-sm font-medium hover:opacity-80 transition-opacity"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {isAdmin ? (
+                <>
+                  <Link
+                    href="/admin"
+                    className="text-white text-sm font-medium hover:opacity-80 transition-opacity"
+                  >
+                    Admin
+                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  >
+                    Salir
+                  </Button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-white text-sm font-medium hover:opacity-80 transition-opacity"
+                >
+                  Admin
+                </Link>
+              )}
+            </nav>
           </div>
-          <div className="flex items-center gap-4">
+        </div>
+      </header>
+
+      {/* Navegación Móvil */}
+      <div
+        className="md:hidden sticky top-0 z-50"
+        style={{ backgroundColor: '#9a2a2e' }}
+      >
+        <div className="px-4 py-3">
+          {/* Logo y Nombre en Móvil */}
+          <Link href="/" className="flex items-center gap-2 mb-3">
+            <div className="bg-white rounded-xl p-1.5">
+              <img
+                src="/images/logo.png"
+                alt="Papi Fútbol"
+                className="w-6 h-6 object-contain"
+              />
+            </div>
+            <div className="text-white">
+              <h1 className="text-base font-bold">Papi Fútbol</h1>
+              <p className="text-xs opacity-90">Torneo 2025</p>
+            </div>
+          </Link>
+
+          {/* Botones de navegación con scroll horizontal */}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-white text-xs font-medium px-3 py-1.5 bg-white/10 rounded-lg whitespace-nowrap hover:bg-white/20 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
             {isAdmin ? (
               <>
-                <Link href="/admin" className="text-sm hover:text-primary transition-colors">
+                <Link
+                  href="/admin"
+                  className="text-white text-xs font-medium px-3 py-1.5 bg-white/10 rounded-lg whitespace-nowrap hover:bg-white/20 transition-colors"
+                >
                   Admin
                 </Link>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => signOut({ callbackUrl: '/' })}
+                  className="text-white text-xs border-white/20 bg-white/10 hover:bg-white/20 whitespace-nowrap"
                 >
                   Salir
                 </Button>
               </>
             ) : (
-              <Link href="/login" className="text-sm hover:text-primary transition-colors">
+              <Link
+                href="/login"
+                className="text-white text-xs font-medium px-3 py-1.5 bg-white/10 rounded-lg whitespace-nowrap hover:bg-white/20 transition-colors"
+              >
                 Admin
               </Link>
             )}
           </div>
         </div>
       </div>
-    </nav>
+    </>
   )
 }
 

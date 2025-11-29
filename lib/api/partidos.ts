@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { PartidoFormData, ResultadoFormData } from '@/lib/validations/partido'
+import { AgregarGolFormData, ActualizarGolesEquipoFormData } from '@/lib/validations/gol'
 import { apiUrl } from '@/lib/utils/api'
 
 export type Partido = {
   id: string
   fechaId: string
+  fechaHora?: string | null
   equipoLocalId: string
   equipoVisitanteId: string
   golesLocal: number
@@ -29,6 +31,18 @@ export type Partido = {
     slug: string
     escudo: string | null
   }
+  goles?: Array<{
+    id: string
+    equipoId: string
+    jugador: {
+      id: string
+      nombre: string
+      apellido: string
+      numero: number | null
+    }
+    esPenal: boolean
+    esAutogol: boolean
+  }>
   _count?: {
     goles: number
   }
@@ -208,6 +222,110 @@ export function useCargarResultado() {
       queryClient.invalidateQueries({ queryKey: ['goleadores'] })
       queryClient.invalidateQueries({ queryKey: ['fechas'] })
       queryClient.invalidateQueries({ queryKey: ['fecha'] })
+    },
+  })
+}
+
+// Hook para actualizar goles del equipo (modo en vivo)
+export function useActualizarGolesEquipo() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ partidoId, data }: { partidoId: string; data: ActualizarGolesEquipoFormData }) => {
+      const response = await fetch(apiUrl(`api/partidos/${partidoId}/goles`), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al actualizar goles')
+      }
+
+      return response.json()
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['partidos'] })
+      queryClient.invalidateQueries({ queryKey: ['partido', variables.partidoId] })
+    },
+  })
+}
+
+// Hook para agregar un gol individual (modo en vivo)
+export function useAgregarGol() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ partidoId, data }: { partidoId: string; data: AgregarGolFormData }) => {
+      const response = await fetch(apiUrl(`api/partidos/${partidoId}/goles/individual`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al agregar gol')
+      }
+
+      return response.json()
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['partidos'] })
+      queryClient.invalidateQueries({ queryKey: ['partido', variables.partidoId] })
+      queryClient.invalidateQueries({ queryKey: ['goleadores'] })
+    },
+  })
+}
+
+// Hook para eliminar un gol individual (modo en vivo)
+export function useEliminarGol() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ partidoId, golId }: { partidoId: string; golId: string }) => {
+      const response = await fetch(apiUrl(`api/partidos/${partidoId}/goles/${golId}`), {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al eliminar gol')
+      }
+
+      return response.json()
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['partidos'] })
+      queryClient.invalidateQueries({ queryKey: ['partido', variables.partidoId] })
+      queryClient.invalidateQueries({ queryKey: ['goleadores'] })
+    },
+  })
+}
+
+// Hook para cambiar estado del partido (especialmente para iniciar/finalizar)
+export function useCambiarEstadoPartido() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ partidoId, estado }: { partidoId: string; estado: string }) => {
+      const response = await fetch(apiUrl(`api/partidos/${partidoId}`), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Error al cambiar estado')
+      }
+
+      return response.json()
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['partidos'] })
+      queryClient.invalidateQueries({ queryKey: ['partido', variables.partidoId] })
     },
   })
 }

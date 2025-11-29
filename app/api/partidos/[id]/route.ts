@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 import { partidoSchema } from '@/lib/validations/partido'
+import { combineFechaAndHoraToUTC } from '@/lib/utils/date'
 
 // GET /api/partidos/[id] - Obtener partido por ID (público)
 export async function GET(
@@ -88,7 +89,81 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const validatedData = partidoSchema.parse(body)
+    
+    // Si viene horaLocal, combinar con la fecha de la fecha seleccionada
+    let fechaHoraUTC: Date | undefined | null
+    if (body.horaLocal !== undefined && body.fechaId) {
+      if (body.horaLocal === null || body.horaLocal === '') {
+        fechaHoraUTC = null as any
+      } else {
+        // Obtener la fecha de la fecha seleccionada
+        const fecha = await prisma.fecha.findUnique({
+          where: { id: body.fechaId },
+        })
+        
+        if (fecha) {
+          // Combinar la fecha (en UTC 00:00) con la hora local seleccionada
+          fechaHoraUTC = combineFechaAndHoraToUTC(fecha.fecha, body.horaLocal)
+        }
+      }
+    } else if (body.fechaHora !== undefined) {
+      // Si viene fechaHora directamente (para compatibilidad)
+      if (body.fechaHora === null) {
+        fechaHoraUTC = null as any
+      } else {
+        fechaHoraUTC = typeof body.fechaHora === 'string' ? new Date(body.fechaHora) : body.fechaHora
+      }
+    }
+    
+    // Si solo se envía el estado, hacer update parcial
+    if (Object.keys(body).length === 1 && body.estado) {
+      // Validar que el estado sea válido
+      const estadosValidos = ['pendiente', 'jugando', 'jugado', 'suspendido', 'cancelado', 'no_se_presento_local', 'no_se_presento_visitante']
+      if (!estadosValidos.includes(body.estado)) {
+        return NextResponse.json(
+          { error: 'Estado inválido' },
+          { status: 400 }
+        )
+      }
+      
+      const partidoActualizado = await prisma.partido.update({
+        where: { id: params.id },
+        data: { estado: body.estado },
+        include: {
+          fecha: {
+            select: {
+              id: true,
+              numero: true,
+              nombre: true,
+            },
+          },
+          equipoLocal: {
+            select: {
+              id: true,
+              nombre: true,
+              slug: true,
+              escudo: true,
+            },
+          },
+          equipoVisitante: {
+            select: {
+              id: true,
+              nombre: true,
+              slug: true,
+              escudo: true,
+            },
+          },
+        },
+      })
+      return NextResponse.json(partidoActualizado)
+    }
+    
+    const dataToValidate = {
+      ...body,
+      fechaHora: fechaHoraUTC !== undefined ? fechaHoraUTC : body.fechaHora,
+    }
+    
+    const validatedData = partidoSchema.parse(dataToValidate)
 
     // Verificar que el partido exista
     const partidoExistente = await prisma.partido.findUnique({
@@ -120,6 +195,7 @@ export async function PUT(
       where: { id: params.id },
       data: {
         fechaId: validatedData.fechaId,
+        fechaHora: validatedData.fechaHora,
         equipoLocalId: validatedData.equipoLocalId,
         equipoVisitanteId: validatedData.equipoVisitanteId,
         estado: validatedData.estado,
