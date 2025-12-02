@@ -26,12 +26,12 @@ export default function HomePage() {
         <NoticiasSlide />
       </div>
 
-      {/* Tabla de Posiciones - La más importante */}
-      <TablaPosiciones />
-
       {/* Tabla de Partidos de la Última Fecha */}
 
       <TablaUltimaFecha />
+
+      {/* Tabla de Posiciones - La más importante */}
+      <TablaPosiciones />
 
       {/* Tabla de Goleadores */}
       <TablaGoleadores />

@@ -137,7 +137,7 @@ export function useCreatePartido() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['partidos'] })
       queryClient.invalidateQueries({ queryKey: ['fechas'] })
-      queryClient.invalidateQueries({ queryKey: ['fecha'] })
+      queryClient.invalidateQueries({ queryKey: ['fechas'] })
     },
   })
 }
@@ -165,7 +165,7 @@ export function useUpdatePartido() {
       queryClient.invalidateQueries({ queryKey: ['partidos'] })
       queryClient.invalidateQueries({ queryKey: ['partido', variables.id] })
       queryClient.invalidateQueries({ queryKey: ['fechas'] })
-      queryClient.invalidateQueries({ queryKey: ['fecha'] })
+      queryClient.invalidateQueries({ queryKey: ['fechas'] })
     },
   })
 }
@@ -190,7 +190,7 @@ export function useDeletePartido() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['partidos'] })
       queryClient.invalidateQueries({ queryKey: ['fechas'] })
-      queryClient.invalidateQueries({ queryKey: ['fecha'] })
+      queryClient.invalidateQueries({ queryKey: ['fechas'] })
     },
   })
 }
@@ -221,7 +221,7 @@ export function useCargarResultado() {
       queryClient.invalidateQueries({ queryKey: ['tabla'] })
       queryClient.invalidateQueries({ queryKey: ['goleadores'] })
       queryClient.invalidateQueries({ queryKey: ['fechas'] })
-      queryClient.invalidateQueries({ queryKey: ['fecha'] })
+      queryClient.invalidateQueries({ queryKey: ['fechas'] })
     },
   })
 }

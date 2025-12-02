@@ -22,9 +22,13 @@ export type EquipoDetalle = Equipo & {
     nombre: string
     apellido: string
     numero: number | null
+    foto: string | null
   }>
   estadisticas: {
     partidosJugados: number
+    victorias: number
+    empates: number
+    derrotas: number
     golesAFavor: number
     golesEnContra: number
     diferencia: number

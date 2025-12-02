@@ -1,14 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 import { usePartidos, useDeletePartido, Partido } from '@/lib/api/partidos'
 import { PartidoForm } from '@/components/admin/PartidoForm'
 import { useFechas } from '@/lib/api/fechas'
-import { formatDateTimeUTC } from '@/lib/utils/date'
+import { formatDateTimeUTC, formatDateUTC } from '@/lib/utils/date'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FileText, Pencil, Trash2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -17,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
 export default function PartidosPage() {
@@ -99,6 +99,21 @@ export default function PartidosPage() {
     return labels[estado] || estado
   }
 
+  // Ordenar partidos del más nuevo al más viejo
+  const partidosOrdenados = useMemo(() => {
+    if (!partidos) return []
+    return [...partidos].sort((a, b) => {
+      // Ordenar por fechaHora si existe, sino por createdAt
+      const fechaA = a.fechaHora 
+        ? new Date(a.fechaHora).getTime() 
+        : new Date(a.createdAt).getTime()
+      const fechaB = b.fechaHora 
+        ? new Date(b.fechaHora).getTime() 
+        : new Date(b.createdAt).getTime()
+      return fechaB - fechaA
+    })
+  }, [partidos])
+
   if (isLoading) {
     return <div>Cargando partidos...</div>
   }
@@ -106,10 +121,13 @@ export default function PartidosPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gestión de Partidos</h2>
+        <h2 className="text-2xl font-bold">Partidos</h2>
         {!showForm && (
-          <Button onClick={handleCreate}>
-            Crear Nuevo Partido
+          <Button 
+            onClick={handleCreate}
+            className="bg-[#852024] hover:bg-[#6a1a1d] text-white"
+          >
+            Nuevo Partido
           </Button>
         )}
       </div>
@@ -139,7 +157,7 @@ export default function PartidosPage() {
                     <option value="">Seleccionar fecha</option>
                     {fechas?.map((fecha) => (
                       <option key={fecha.id} value={fecha.id}>
-                        Fecha {fecha.numero} {fecha.nombre ? `- ${fecha.nombre}` : ''}
+                        {fecha.nombre || `Fecha ${fecha.numero}`}
                       </option>
                     ))}
                   </select>
@@ -172,92 +190,70 @@ export default function PartidosPage() {
 
       {!showForm && (
         <Card>
-          <CardHeader>
-            <CardTitle>Lista de Partidos</CardTitle>
-          </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Hora</TableHead>
-                  <TableHead>Local</TableHead>
-                  <TableHead>Visitante</TableHead>
-                  <TableHead>Resultado</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {partidos && partidos.length > 0 ? (
-                  partidos.map((partido) => (
-                    <TableRow key={partido.id}>
-                      <TableCell>
-                        {partido.fecha ? (
-                          <Link 
-                            href={`/admin/fechas/${partido.fecha.id}`}
-                            className="text-primary hover:underline"
-                          >
-                            Fecha {partido.fecha.numero}
-                          </Link>
-                        ) : '-'}
-                      </TableCell>
-                      <TableCell>
-                        {partido.fechaHora ? formatDateTimeUTC(partido.fechaHora) : '-'}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {partido.equipoLocal?.nombre || '-'}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {partido.equipoVisitante?.nombre || '-'}
-                      </TableCell>
-                      <TableCell>
-                        {partido.estado === 'jugando' ||
-                        partido.estado === 'jugado' ||
-                        partido.estado === 'no_se_presento_local' ||
-                        partido.estado === 'no_se_presento_visitante'
-                          ? `${partido.golesLocal} - ${partido.golesVisitante}`
-                          : '-'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getEstadoBadge(partido.estado)}>
-                          {getEstadoLabel(partido.estado)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link href={`/admin/resultados/${partido.id}`}>
-                            <Button variant="outline" size="sm">
-                              Resultado
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {partidosOrdenados && partidosOrdenados.length > 0 ? (
+                    partidosOrdenados.map((partido) => (
+                      <TableRow key={partido.id}>
+                        <TableCell className="font-medium">
+                          {partido.equipoLocal?.nombre || '-'} vs {partido.equipoVisitante?.nombre || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {partido.fechaHora ? formatDateUTC(partido.fechaHora) : '-'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Link href={`/admin/resultados/${partido.id}`}>
+                              <Button 
+                                variant="outline" 
+                                size="icon"
+                                className="h-8 w-8"
+                                title="Ver Resultado"
+                              >
+                                <FileText className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleEdit(partido)}
+                              title="Editar"
+                            >
+                              <Pencil className="h-4 w-4" />
                             </Button>
-                          </Link>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(partido)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(partido.id)}
-                          >
-                            Eliminar
-                          </Button>
-                        </div>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleDelete(partido.id)}
+                              title="Eliminar"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center">
+                        No hay partidos registrados
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      No hay partidos registrados
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       )}

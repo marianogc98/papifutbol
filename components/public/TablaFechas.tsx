@@ -42,7 +42,7 @@ export function TablaFechas() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Fecha #</TableHead>
+            <TableHead>Fixture #</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Fecha</TableHead>
             <TableHead>Partidos</TableHead>

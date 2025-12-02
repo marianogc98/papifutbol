@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="es" suppressHydrationWarning style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <body className={inter.className} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', overflowX: 'hidden' }}>
         <Providers>{children}</Providers>
         <Umami />
       </body>

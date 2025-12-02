@@ -6,6 +6,7 @@ import { useJugadores, useDeleteJugador, Jugador } from '@/lib/api/jugadores'
 import { JugadorForm } from '@/components/admin/JugadorForm'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Pencil, Trash2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -14,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 
 export default function JugadoresPage() {
   const pathname = usePathname()
@@ -59,21 +59,6 @@ export default function JugadoresPage() {
     setEditingJugador(undefined)
   }
 
-  const getEstadoBadge = (estado: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      activo: 'default',
-      lesionado: 'secondary',
-      suspendido: 'secondary',
-      dado_de_baja: 'destructive',
-    }
-    return variants[estado] || 'outline'
-  }
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '-'
-    return new Date(dateString).toLocaleDateString('es-AR')
-  }
-
   if (isLoading) {
     return <div>Cargando jugadores...</div>
   }
@@ -81,10 +66,13 @@ export default function JugadoresPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gestión de Jugadores</h2>
+        <h2 className="text-2xl font-bold">Jugadores</h2>
         {!showForm && (
-          <Button onClick={() => setShowForm(true)}>
-            Crear Nuevo Jugador
+          <Button 
+            onClick={() => setShowForm(true)}
+            className="bg-[#852024] hover:bg-[#6a1a1d] text-white"
+          >
+            Nuevo Jugador
           </Button>
         )}
       </div>
@@ -107,69 +95,56 @@ export default function JugadoresPage() {
 
       {!showForm && (
         <Card>
-          <CardHeader>
-            <CardTitle>Lista de Jugadores</CardTitle>
-          </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Apellido</TableHead>
-                  <TableHead>Número</TableHead>
-                  <TableHead>Equipo</TableHead>
-                  <TableHead>Fecha Nac.</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {jugadores && jugadores.length > 0 ? (
-                  jugadores.map((jugador) => (
-                    <TableRow key={jugador.id}>
-                      <TableCell className="font-medium">
-                        {jugador.nombre}
-                      </TableCell>
-                      <TableCell>{jugador.apellido}</TableCell>
-                      <TableCell>{jugador.numero || '-'}</TableCell>
-                      <TableCell>
-                        {jugador.equipo?.nombre || 'Sin equipo'}
-                      </TableCell>
-                      <TableCell>{formatDate(jugador.fechaNac)}</TableCell>
-                      <TableCell>
-                        <Badge variant={getEstadoBadge(jugador.estado)}>
-                          {jugador.estado}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(jugador)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(jugador.id)}
-                          >
-                            Eliminar
-                          </Button>
-                        </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {jugadores && jugadores.length > 0 ? (
+                    jugadores.map((jugador) => (
+                      <TableRow key={jugador.id}>
+                        <TableCell className="font-medium">
+                          {jugador.nombre} {jugador.apellido}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleEdit(jugador)}
+                              title="Editar"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleDelete(jugador.id)}
+                              title="Eliminar"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center">
+                        No hay jugadores registrados
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center">
-                      No hay jugadores registrados
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       )}

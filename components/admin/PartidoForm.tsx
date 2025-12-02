@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { partidoSchema, PartidoFormData } from '@/lib/validations/partido'
@@ -19,6 +20,7 @@ interface PartidoFormProps {
 }
 
 export function PartidoForm({ partido, fechaId: propFechaId, onSuccess }: PartidoFormProps) {
+  const router = useRouter()
   const [error, setError] = useState<string>('')
   const createPartido = useCreatePartido()
   const updatePartido = useUpdatePartido()
@@ -70,11 +72,20 @@ export function PartidoForm({ partido, fechaId: propFechaId, onSuccess }: Partid
         // Usar el valor del DOM si el form no lo capturó
         horaLocal: horaLocalValue && horaLocalValue.trim() !== '' ? horaLocalValue.trim() : undefined,
       }
+      
+      let partidoResultado: Partido
       if (partido) {
-        await updatePartido.mutateAsync({ id: partido.id, data: submitData })
+        partidoResultado = await updatePartido.mutateAsync({ id: partido.id, data: submitData })
       } else {
-        await createPartido.mutateAsync(submitData)
+        partidoResultado = await createPartido.mutateAsync(submitData)
       }
+      
+      // Si el estado es "jugado", redirigir a la página de resultados
+      if (submitData.estado === 'jugado') {
+        router.push(`/admin/resultados/${partidoResultado.id}`)
+        return
+      }
+      
       reset()
       onSuccess?.()
     } catch (err: any) {

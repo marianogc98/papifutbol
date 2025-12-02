@@ -20,32 +20,39 @@ export function AdminNav() {
   }
 
   const navLinks = [
-    { href: '/admin', label: 'Dashboard' },
+    { href: '/admin/dashboard', label: 'Dashboard' },
     { href: '/admin/equipos', label: 'Equipos' },
     { href: '/admin/jugadores', label: 'Jugadores' },
-    { href: '/admin/fechas', label: 'Fechas' },
+    { href: '/admin/fixture', label: 'Fixture' },
     { href: '/admin/partidos', label: 'Partidos' },
     { href: '/admin/noticias', label: 'Noticias' },
     { href: '/admin/publicidades', label: 'Publicidades', requiresSuperAdmin: true },
   ]
 
   return (
-    <nav className="mb-6 border-b">
-      <div className="flex gap-4">
+    <nav className="mb-6">
+      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
         {navLinks
           .filter((link) => !link.requiresSuperAdmin || isSuperAdmin)
           .map((link) => {
-            const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`)
+            // Para Dashboard, activo si es exactamente /admin/dashboard
+            // Para otros links, activo si coincide exactamente o empieza con el href
+            const isActive = link.href === '/admin/dashboard' 
+              ? pathname === '/admin/dashboard'
+              : pathname === link.href || pathname.startsWith(`${link.href}/`)
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(link.href, e)}
-                className={`px-4 py-2 text-sm hover:text-primary transition-colors border-b-2 ${
+                className={`px-4 py-2 text-sm transition-colors border-b-2 whitespace-nowrap flex-shrink-0 ${
                   isActive
-                    ? 'border-primary text-primary'
-                    : 'border-transparent hover:border-primary'
+                    ? 'text-[#852024]'
+                    : 'border-transparent hover:text-[#852024]'
                 }`}
+                style={{
+                  borderBottomColor: isActive ? '#852024' : 'transparent',
+                }}
               >
                 {link.label}
               </Link>

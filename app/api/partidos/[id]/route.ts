@@ -96,7 +96,7 @@ export async function PUT(
       if (body.horaLocal === null || body.horaLocal === '') {
         fechaHoraUTC = null as any
       } else {
-        // Obtener la fecha de la fecha seleccionada
+        // Obtener la fecha seleccionada
         const fecha = await prisma.fecha.findUnique({
           where: { id: body.fechaId },
         })

@@ -1,17 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
 
 export function Navbar() {
-  const { data: session } = useSession()
-  const isAdmin = !!session
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
-    { href: '/tabla', label: 'Tabla' },
-    { href: '/fechas', label: 'Fechas' },
+    { href: '/posiciones', label: 'Posiciones' },
+    { href: '/fixture', label: 'Fixture' },
     { href: '/goleadores', label: 'Goleadores' },
   ]
 
@@ -19,7 +15,7 @@ export function Navbar() {
     <>
       {/* Header Principal - Desktop */}
       <header
-        className="hidden md:block rounded-xl mx-4 mt-4 mb-6"
+        className="hidden md:block w-full mb-6 rounded-b-xl"
         style={{ backgroundColor: '#852024' }}
       >
         <div className="container mx-auto px-4 py-4">
@@ -50,31 +46,6 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              {isAdmin ? (
-                <>
-                  <Link
-                    href="/admin"
-                    className="text-white text-sm font-medium hover:opacity-80 transition-opacity"
-                  >
-                    Admin
-                  </Link>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  >
-                    Salir
-                  </Button>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  className="text-white text-sm font-medium hover:opacity-80 transition-opacity"
-                >
-                  Admin
-                </Link>
-              )}
             </nav>
           </div>
         </div>
@@ -82,7 +53,7 @@ export function Navbar() {
 
       {/* Navegación Móvil */}
       <div
-        className="md:hidden sticky top-0 z-50"
+        className="md:hidden sticky top-0 z-50 w-full rounded-b-xl"
         style={{ backgroundColor: '#9a2a2e' }}
       >
         <div className="px-4 py-3">
@@ -112,31 +83,6 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {isAdmin ? (
-              <>
-                <Link
-                  href="/admin"
-                  className="text-white text-xs font-medium px-3 py-1.5 bg-white/10 rounded-lg whitespace-nowrap hover:bg-white/20 transition-colors"
-                >
-                  Admin
-                </Link>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="text-white text-xs border-white/20 bg-white/10 hover:bg-white/20 whitespace-nowrap"
-                >
-                  Salir
-                </Button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="text-white text-xs font-medium px-3 py-1.5 bg-white/10 rounded-lg whitespace-nowrap hover:bg-white/20 transition-colors"
-              >
-                Admin
-              </Link>
-            )}
           </div>
         </div>
       </div>

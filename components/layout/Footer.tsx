@@ -6,8 +6,8 @@ export function Footer() {
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
-    { href: '/tabla', label: 'Tabla' },
-    { href: '/fechas', label: 'Fechas' },
+    { href: '/posiciones', label: 'Posiciones' },
+    { href: '/fixture', label: 'Fixture' },
     { href: '/goleadores', label: 'Goleadores' },
   ]
 

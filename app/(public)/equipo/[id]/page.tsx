@@ -3,8 +3,8 @@
 import { useParams } from 'next/navigation'
 import { useEquipo } from '@/lib/api/equipos'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { CustomImage } from '@/components/ui/Image'
+import { tableStyles } from '@/lib/constants/tableStyles'
 import {
   Table,
   TableBody,
@@ -19,14 +19,16 @@ export default function EquipoPage() {
   const slugOrId = params.id as string
   const { data: equipo, isLoading } = useEquipo(slugOrId)
 
-  const getEstadoBadge = (estado: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      activo: 'default',
-      eliminado: 'destructive',
-      suspendido: 'secondary',
-      descalificado: 'destructive',
-    }
-    return variants[estado] || 'outline'
+  const getVidasColor = (vidas: number) => {
+    if (vidas >= 2) return 'text-green-600'
+    if (vidas === 1) return 'text-orange-600'
+    return 'text-red-600'
+  }
+
+  const getVidasBgColor = (vidas: number) => {
+    if (vidas >= 2) return 'bg-green-100 border-green-300'
+    if (vidas === 1) return 'bg-orange-100 border-orange-300'
+    return 'bg-red-100 border-red-300'
   }
 
   if (isLoading) {
@@ -46,104 +48,139 @@ export default function EquipoPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full">
+      {/* Header con escudo, nombre y vidas */}
       <div className="mb-6">
-        <div className="flex items-center gap-4 mb-4">
-          {equipo.escudo && (
-            <CustomImage
-              src={equipo.escudo}
-              alt={equipo.nombre}
-              width={80}
-              height={80}
-            />
-          )}
-          <div>
-            <h1 className="text-3xl font-bold">{equipo.nombre}</h1>
-            <Badge variant={getEstadoBadge(equipo.estado)} className="mt-2">
-              {equipo.estado}
-            </Badge>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            {equipo.escudo && (
+              <CustomImage
+                src={equipo.escudo}
+                alt={equipo.nombre}
+                width={80}
+                height={80}
+              />
+            )}
+            <h1 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>
+              {equipo.nombre}
+            </h1>
+          </div>
+          {/* Vidas destacadas */}
+          <div className={`flex flex-col items-center justify-center px-4 py-3 border-2 rounded-lg ${getVidasBgColor(equipo.vidas)}`}>
+            <span className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.secondary} font-medium`}>Vidas</span>
+            <span className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${getVidasColor(equipo.vidas)}`}>
+              {equipo.vidas}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Información General</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Vidas Restantes:</span>
-              <span className="font-bold text-lg">{equipo.vidas}</span>
+      {/* Estadísticas */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Estadísticas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Datos de partidos */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Jugados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.primary}`}>
+                {equipo.estadisticas.partidosJugados}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Estado:</span>
-              <Badge variant={getEstadoBadge(equipo.estado)}>
-                {equipo.estado}
-              </Badge>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Ganados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.positive}`}>
+                {equipo.estadisticas.victorias}
+              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Estadísticas</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Partidos Jugados:</span>
-              <span className="font-medium">{equipo.estadisticas.partidosJugados}</span>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Empatados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.warning}`}>
+                {equipo.estadisticas.empates}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Goles a Favor:</span>
-              <span className="font-medium">{equipo.estadisticas.golesAFavor}</span>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Perdidos</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.negative}`}>
+                {equipo.estadisticas.derrotas}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Goles en Contra:</span>
-              <span className="font-medium">{equipo.estadisticas.golesEnContra}</span>
+          </div>
+          {/* Datos de goles */}
+          <div className="grid grid-cols-3 gap-4 border-t pt-4">
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>GF</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.positive}`}>
+                {equipo.estadisticas.golesAFavor}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Diferencia:</span>
-              <span className={`font-medium ${equipo.estadisticas.diferencia >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>GC</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.negative}`}>
+                {equipo.estadisticas.golesEnContra}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>DIF</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${equipo.estadisticas.diferencia >= 0 ? tableStyles.colors.positive : tableStyles.colors.negative}`}>
                 {equipo.estadisticas.diferencia > 0 ? '+' : ''}{equipo.estadisticas.diferencia}
-              </span>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* Jugadores */}
       <Card>
         <CardHeader>
           <CardTitle>Jugadores</CardTitle>
         </CardHeader>
         <CardContent>
           {equipo.jugadores && equipo.jugadores.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Número</TableHead>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Apellido</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {equipo.jugadores.map((jugador) => (
-                  <TableRow key={jugador.id}>
-                    <TableCell>
-                      {jugador.numero || '-'}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {jugador.nombre}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {jugador.apellido}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {equipo.jugadores.map((jugador) => (
+                <div
+                  key={jugador.id}
+                  className={`${tableStyles.backgrounds.table} ${tableStyles.borders.table} ${tableStyles.shadows.card} p-3 rounded-lg`}
+                >
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-3">
+                    {jugador.foto ? (
+                      <CustomImage
+                        src={jugador.foto}
+                        alt={`${jugador.nombre} ${jugador.apellido}`}
+                        width={60}
+                        height={60}
+                        className="rounded-lg flex-shrink-0"
+                        square={true}
+                      />
+                    ) : (
+                      <div className="w-[60px] h-[60px] rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                        <span className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} font-medium`}>
+                          {jugador.nombre.charAt(0)}{jugador.apellido.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex flex-col text-center md:text-left flex-1 min-w-0">
+                      <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
+                        {jugador.nombre}
+                      </div>
+                      <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
+                        {jugador.apellido}
+                      </div>
+                      {jugador.numero && (
+                        <div className={`${tableStyles.text.secondary.mobile} md:${tableStyles.text.secondary.desktop} font-semibold ${tableStyles.colors.secondary} mt-1`}>
+                          #{jugador.numero}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <p className="text-muted-foreground text-center py-4">
+            <p className={`${tableStyles.colors.muted} text-center py-4`}>
               No hay jugadores registrados en este equipo
             </p>
           )}
@@ -152,4 +189,3 @@ export default function EquipoPage() {
     </div>
   )
 }
-

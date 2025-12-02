@@ -6,6 +6,7 @@ import { CustomImage } from '@/components/ui/Image'
 import { formatDateTimeUTC } from '@/lib/utils/date'
 import { ChevronRight, Icon } from 'lucide-react'
 import { soccerBall } from '@lucide/lab'
+import { tableStyles } from '@/lib/constants/tableStyles'
 
 import type { Partido } from '@/lib/api/partidos'
 
@@ -75,16 +76,16 @@ export function TablaResultados({
 
   if (partidos.length === 0) {
     return (
-      <div className="w-full">
-        {titulo && (
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold">{titulo}</h2>
+        <div className="w-full">
+          {titulo && (
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h2 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>{titulo}</h2>
+            </div>
+          )}
+          <div className={`${tableStyles.backgrounds.table} ${tableStyles.borders.table} p-8 text-center`}>
+            <p className={tableStyles.colors.muted}>{emptyMessage}</p>
           </div>
-        )}
-        <div className="bg-white border rounded-xl p-8 text-center">
-          <p className="text-muted-foreground">{emptyMessage}</p>
         </div>
-      </div>
     )
   }
 
@@ -92,8 +93,8 @@ export function TablaResultados({
     <div className="w-full">
       {/* Header */}
       {titulo && (
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold">{titulo}</h2>
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <h2 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>{titulo}</h2>
           {mostrarVerTodos && onVerTodos && (
             <button
               onClick={onVerTodos}
@@ -175,7 +176,7 @@ export function TablaResultados({
 
                   <td className="px-6 py-4 text-center">
                     {mostrar ? (
-                      <span className="font-bold text-2xl">
+                      <span className="font-bold text-xl">
                         {partido.golesLocal} - {partido.golesVisitante}
                       </span>
                     ) : (
@@ -237,13 +238,12 @@ export function TablaResultados({
 
           return (
             <div key={partido.id} className="bg-white border rounded-xl p-4 shadow-md">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-3">
                 <span className="text-sm font-medium">
                   {partido.fechaHora ? formatDateTime(partido.fechaHora) : '-'}
                 </span>
                 {partido.estado === 'jugando' && (
-                  <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 inline-block animate-pulse"></span>
-
+                  <span className="w-1.5 h-1.5 bg-green-600 rounded-full mr-1 inline-block animate-pulse"></span>
                 )}
                 {partido.estado === 'jugado' && (
                   <Badge className="bg-muted hover:bg-muted/80 text-xs text-black">
@@ -252,59 +252,73 @@ export function TablaResultados({
                 )}
               </div>
 
-              <div className="flex items-start justify-between mb-2">
+              {/* Equipos en una línea */}
+              <div className="flex items-center gap-2 mb-3">
+                {/* Equipo Local */}
                 <Link
                   href={`/equipo/${partido.equipoLocal?.slug || partido.equipoLocal?.id}`}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-1"
+                  className="flex items-center gap-1.5 hover:opacity-80 transition-opacity flex-1 min-w-0"
                 >
                   {partido.equipoLocal?.escudo && (
                     <CustomImage
                       src={partido.equipoLocal.escudo}
                       alt={partido.equipoLocal.nombre}
-                      width={36}
-                      height={36}
+                      width={24}
+                      height={24}
                       className="flex-shrink-0"
                     />
                   )}
-                  <span className="font-medium text-sm">{partido.equipoLocal?.nombre}</span>
+                  <span className="font-medium text-sm truncate">{partido.equipoLocal?.nombre}</span>
                 </Link>
-                {mostrar && (
-                  <span className="font-bold text-xl ml-2">{partido.golesLocal}</span>
-                )}
-              </div>
 
-              {goleadoresLocal.length > 0 && (
-                <div className="text-xs text-muted-foreground ml-11 mb-3 flex items-center gap-1.5">
-                  <Icon iconNode={soccerBall} className="w-3 h-3 flex-shrink-0" />
-                  <span>{formatGoleadores(goleadoresLocal)}</span>
+                {/* Resultado o VS */}
+                <div className="flex-shrink-0 px-2">
+                  {mostrar ? (
+                    <span className="font-bold text-lg">
+                      {partido.golesLocal} - {partido.golesVisitante}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">vs</span>
+                  )}
                 </div>
-              )}
 
-              <div className="flex items-start justify-between mb-2">
+                {/* Equipo Visitante */}
                 <Link
                   href={`/equipo/${partido.equipoVisitante?.slug || partido.equipoVisitante?.id}`}
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-1"
+                  className="flex items-center gap-1.5 hover:opacity-80 transition-opacity flex-1 min-w-0 justify-end"
                 >
+                  <span className="font-medium text-sm truncate text-right">{partido.equipoVisitante?.nombre}</span>
                   {partido.equipoVisitante?.escudo && (
                     <CustomImage
                       src={partido.equipoVisitante.escudo}
                       alt={partido.equipoVisitante.nombre}
-                      width={36}
-                      height={36}
+                      width={24}
+                      height={24}
                       className="flex-shrink-0"
                     />
                   )}
-                  <span className="font-medium text-sm">{partido.equipoVisitante?.nombre}</span>
                 </Link>
-                {mostrar && (
-                  <span className="font-bold text-xl ml-2">{partido.golesVisitante}</span>
-                )}
               </div>
 
-              {goleadoresVisitante.length > 0 && (
-                <div className="text-xs text-muted-foreground ml-11 flex items-center gap-1.5">
-                  <Icon iconNode={soccerBall} className="w-3 h-3 flex-shrink-0" />
-                  <span>{formatGoleadores(goleadoresVisitante)}</span>
+              {/* Goleadores */}
+              {(goleadoresLocal.length > 0 || goleadoresVisitante.length > 0) && (
+                <div className="space-y-1 pt-2 border-t">
+                  {goleadoresLocal.length > 0 && (
+                    <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Icon iconNode={soccerBall} className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">
+                        <span className="font-medium">{partido.equipoLocal?.nombre}:</span> {formatGoleadores(goleadoresLocal)}
+                      </span>
+                    </div>
+                  )}
+                  {goleadoresVisitante.length > 0 && (
+                    <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Icon iconNode={soccerBall} className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">
+                        <span className="font-medium">{partido.equipoVisitante?.nombre}:</span> {formatGoleadores(goleadoresVisitante)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -72,8 +72,14 @@ export function useCreateJugador() {
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Error al crear jugador')
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const error = await response.json()
+          throw new Error(error.error || 'Error al crear jugador')
+        } else {
+          const text = await response.text()
+          throw new Error(`Error al crear jugador: ${response.status} ${response.statusText}`)
+        }
       }
 
       return response.json()
@@ -90,15 +96,21 @@ export function useUpdateJugador() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: JugadorFormData }) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/jugadores/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Error al actualizar jugador')
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const error = await response.json()
+          throw new Error(error.error || 'Error al actualizar jugador')
+        } else {
+          const text = await response.text()
+          throw new Error(`Error al actualizar jugador: ${response.status} ${response.statusText}`)
+        }
       }
 
       return response.json()
@@ -116,7 +128,7 @@ export function useDeleteJugador() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/jugadores/${id}`), {
         method: 'DELETE',
       })
 

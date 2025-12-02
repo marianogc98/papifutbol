@@ -8,7 +8,7 @@ import { combineFechaAndHoraToUTC } from '@/lib/utils/date'
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const fechaId = searchParams.get('fechaId')
+    const fechaId = searchParams.get('fechaId') // Mantener fechaId como nombre del parámetro
     const estado = searchParams.get('estado')
     const equipoId = searchParams.get('equipoId')
 
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     // IMPORTANTE: Esto debe hacerse ANTES de la validación con Zod
     let fechaHoraUTC: Date | undefined
     if (body.horaLocal && body.horaLocal !== '' && body.fechaId) {
-      // Obtener la fecha de la fecha seleccionada
+      // Obtener la fecha seleccionada
       const fecha = await prisma.fecha.findUnique({
         where: { id: body.fechaId },
       })

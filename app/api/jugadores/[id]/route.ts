@@ -87,10 +87,23 @@ export async function PUT(
 
     const body = await request.json()
     
-    // Convertir fechaNac de string ISO a Date si viene como string
+    // Convertir fechaNac de string ISO a Date si viene como string válido
+    let fechaNacConvertida: Date | null = null
+    
+    if (body.fechaNac && body.fechaNac !== null && body.fechaNac !== '') {
+      if (body.fechaNac instanceof Date) {
+        fechaNacConvertida = body.fechaNac
+      } else if (typeof body.fechaNac === 'string') {
+        const fecha = new Date(body.fechaNac)
+        if (!isNaN(fecha.getTime())) {
+          fechaNacConvertida = fecha
+        }
+      }
+    }
+    
     const bodyWithDate = {
       ...body,
-      fechaNac: body.fechaNac ? new Date(body.fechaNac) : null,
+      fechaNac: fechaNacConvertida,
     }
     
     const validatedData = jugadorSchema.parse(bodyWithDate)

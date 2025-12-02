@@ -69,7 +69,7 @@ export async function GET(
     const partidosJugados = equipo._count.partidosLocal + equipo._count.partidosVisitante
     const golesAFavor = equipo._count.goles
 
-    // Obtener goles en contra (goles de otros equipos en partidos de este equipo)
+    // Obtener partidos jugados
     const partidos = await prisma.partido.findMany({
       where: {
         OR: [
@@ -83,22 +83,53 @@ export async function GET(
       },
     })
 
+    // Calcular goles en contra
     let golesEnContra = 0
     partidos.forEach((partido) => {
-      partido.goles.forEach((gol) => {
-        if (gol.equipoId !== equipo.id) {
-          golesEnContra++
-        }
-      })
+      if (partido.equipoLocalId === equipo.id) {
+        golesEnContra += partido.golesVisitante
+      } else {
+        golesEnContra += partido.golesLocal
+      }
     })
 
-    const diferencia = golesAFavor - golesEnContra
+    // Calcular goles a favor
+    let golesAFavorCalculados = 0
+    partidos.forEach((partido) => {
+      if (partido.equipoLocalId === equipo.id) {
+        golesAFavorCalculados += partido.golesLocal
+      } else {
+        golesAFavorCalculados += partido.golesVisitante
+      }
+    })
+
+    const diferencia = golesAFavorCalculados - golesEnContra
+
+    // Calcular victorias, empates y derrotas
+    let victorias = 0
+    let empates = 0
+    let derrotas = 0
+
+    partidos.forEach((partido) => {
+      if (partido.equipoLocalId === equipo.id) {
+        if (partido.golesLocal > partido.golesVisitante) victorias++
+        else if (partido.golesLocal < partido.golesVisitante) derrotas++
+        else empates++
+      } else {
+        if (partido.golesVisitante > partido.golesLocal) victorias++
+        else if (partido.golesVisitante < partido.golesLocal) derrotas++
+        else empates++
+      }
+    })
 
     return NextResponse.json({
       ...equipo,
       estadisticas: {
         partidosJugados,
-        golesAFavor,
+        victorias,
+        empates,
+        derrotas,
+        golesAFavor: golesAFavorCalculados,
         golesEnContra,
         diferencia,
       },

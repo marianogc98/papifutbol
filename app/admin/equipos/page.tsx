@@ -7,6 +7,7 @@ import { useEquipos, useDeleteEquipo, Equipo } from '@/lib/api/equipos'
 import { EquipoForm } from '@/components/admin/EquipoForm'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FileText, Pencil, Trash2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -15,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 
 export default function EquiposPage() {
   const pathname = usePathname()
@@ -60,27 +60,24 @@ export default function EquiposPage() {
     setEditingEquipo(undefined)
   }
 
-  const getEstadoBadge = (estado: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      activo: 'default',
-      eliminado: 'destructive',
-      suspendido: 'secondary',
-      descalificado: 'destructive',
-    }
-    return variants[estado] || 'outline'
-  }
 
   if (isLoading) {
     return <div>Cargando equipos...</div>
   }
 
+  // Ordenar equipos por vidas (mayor a menor)
+  const equiposOrdenados = equipos ? [...equipos].sort((a, b) => b.vidas - a.vidas) : []
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gestión de Equipos</h2>
+        <h2 className="text-2xl font-bold">Equipos</h2>
         {!showForm && (
-          <Button onClick={() => setShowForm(true)}>
-            Crear Nuevo Equipo
+          <Button 
+            onClick={() => setShowForm(true)}
+            className="bg-[#852024] hover:bg-[#6a1a1d] text-white"
+          >
+            Nuevo Equipo
           </Button>
         )}
       </div>
@@ -103,68 +100,66 @@ export default function EquiposPage() {
 
       {!showForm && (
         <Card>
-          <CardHeader>
-            <CardTitle>Lista de Equipos</CardTitle>
-          </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Vidas</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Jugadores</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {equipos && equipos.length > 0 ? (
-                  equipos.map((equipo) => (
-                    <TableRow key={equipo.id}>
-                      <TableCell className="font-medium">
-                        {equipo.nombre}
-                      </TableCell>
-                      <TableCell>{equipo.vidas}</TableCell>
-                      <TableCell>
-                        <Badge variant={getEstadoBadge(equipo.estado)}>
-                          {equipo.estado}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{equipo._count?.jugadores || 0}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link href={`/admin/equipos/${equipo.slug || equipo.id}`}>
-                            <Button variant="outline" size="sm">
-                              Ver Detalle
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {equiposOrdenados.length > 0 ? (
+                    equiposOrdenados.map((equipo) => (
+                      <TableRow key={equipo.id}>
+                        <TableCell className="font-medium">
+                          {equipo.nombre}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Link href={`/admin/equipos/${equipo.slug || equipo.id}`}>
+                              <Button 
+                                variant="outline" 
+                                size="icon"
+                                className="h-8 w-8"
+                                title="Ver Detalle"
+                              >
+                                <FileText className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleEdit(equipo)}
+                              title="Editar"
+                            >
+                              <Pencil className="h-4 w-4" />
                             </Button>
-                          </Link>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(equipo)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(equipo.id)}
-                          >
-                            Eliminar
-                          </Button>
-                        </div>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleDelete(equipo.id)}
+                              title="Eliminar"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center">
+                        No hay equipos registrados
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center">
-                      No hay equipos registrados
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       )}

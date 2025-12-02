@@ -20,4 +20,3 @@ export const fechaSchema = z.object({
 export type FechaFormData = Omit<z.infer<typeof fechaSchema>, 'fecha'> & {
   fecha: Date | string
 }
-

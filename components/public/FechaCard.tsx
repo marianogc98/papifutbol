@@ -49,7 +49,7 @@ export function FechaCard({
 }: FechaCardProps) {
   return (
     <CardTable
-      title={`Fecha ${fecha.numero}${fecha.nombre ? ` - ${fecha.nombre}` : ''}`}
+      title={fecha.nombre || `Fecha ${fecha.numero}`}
       subtitle={formatDateUTC(fecha.fecha)}
       isEmpty={partidos.length === 0}
       emptyMessage="No hay partidos programados para esta fecha"

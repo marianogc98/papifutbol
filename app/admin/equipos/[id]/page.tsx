@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useEquipo } from '@/lib/api/equipos'
 import { useJugadores, useCreateJugador, useUpdateJugador, useDeleteJugador, Jugador } from '@/lib/api/jugadores'
@@ -11,21 +11,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import Link from 'next/link'
 import { CustomImage } from '@/components/ui/Image'
+import { tableStyles } from '@/lib/constants/tableStyles'
+import { Pencil, Trash2 } from 'lucide-react'
 
 export default function EquipoDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const slugOrId = params.id as string
   const { data: equipo, isLoading } = useEquipo(slugOrId)
   const { data: jugadores, isLoading: jugadoresLoading } = useJugadores(equipo?.id || slugOrId)
@@ -119,79 +110,125 @@ export default function EquipoDetailPage() {
     }
   }
 
-  const getEstadoBadge = (estado: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      activo: 'default',
-      lesionado: 'secondary',
-      suspendido: 'secondary',
-      dado_de_baja: 'destructive',
-    }
-    return variants[estado] || 'outline'
+  const getVidasColor = (vidas: number) => {
+    if (vidas >= 2) return 'text-green-600'
+    if (vidas === 1) return 'text-orange-600'
+    return 'text-red-600'
   }
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '-'
-    return new Date(dateString).toLocaleDateString('es-AR')
+  const getVidasBgColor = (vidas: number) => {
+    if (vidas >= 2) return 'bg-green-100 border-green-300'
+    if (vidas === 1) return 'bg-orange-100 border-orange-300'
+    return 'bg-red-100 border-red-300'
   }
 
   if (isLoading) {
-    return <div>Cargando equipo...</div>
+    return (
+      <div className="w-full">
+        <div className="text-center">Cargando equipo...</div>
+      </div>
+    )
   }
 
   if (!equipo) {
-    return <div>Equipo no encontrado</div>
+    return (
+      <div className="w-full">
+        <div className="text-center">Equipo no encontrado</div>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-4 mb-2">
-            <Link href="/admin/equipos">
-              <Button variant="ghost" size="sm">← Volver</Button>
-            </Link>
+    <div className="w-full">
+      {/* Header con escudo, nombre y vidas */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             {equipo.escudo && (
               <CustomImage
                 src={equipo.escudo}
                 alt={equipo.nombre}
-                width={64}
-                height={64}
+                width={80}
+                height={80}
               />
             )}
-            <div>
-              <h1 className="text-3xl font-bold">{equipo.nombre}</h1>
-              <Badge variant={equipo.estado === 'activo' ? 'default' : 'destructive'}>
-                {equipo.estado}
-              </Badge>
-            </div>
+            <h1 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>
+              {equipo.nombre}
+            </h1>
           </div>
-          <p className="text-muted-foreground">
-            Vidas: <span className="font-bold text-lg">{equipo.vidas}</span>
-          </p>
+          {/* Vidas destacadas */}
+          <div className={`flex flex-col items-center justify-center px-4 py-3 border-2 rounded-lg ${getVidasBgColor(equipo.vidas)}`}>
+            <span className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.secondary} font-medium`}>Vidas</span>
+            <span className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${getVidasColor(equipo.vidas)}`}>
+              {equipo.vidas}
+            </span>
+          </div>
         </div>
-        {!showForm && (
-          <Button onClick={() => {
-            setEditingJugador(undefined)
-            setShowForm(true)
-            reset({
-              nombre: '',
-              apellido: '',
-              numero: undefined,
-              fechaNac: undefined,
-              estado: 'activo',
-              equipoId: equipo?.id || slugOrId,
-            })
-          }}>
-            + Agregar Jugador
-          </Button>
-        )}
       </div>
 
+      {/* Estadísticas */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Estadísticas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Datos de partidos */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Jugados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.primary}`}>
+                {equipo.estadisticas.partidosJugados}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Ganados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.positive}`}>
+                {equipo.estadisticas.victorias}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Empatados</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.warning}`}>
+                {equipo.estadisticas.empates}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>Partidos Perdidos</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.negative}`}>
+                {equipo.estadisticas.derrotas}
+              </div>
+            </div>
+          </div>
+          {/* Datos de goles */}
+          <div className="grid grid-cols-3 gap-4 border-t pt-4">
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>GF</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.positive}`}>
+                {equipo.estadisticas.golesAFavor}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>GC</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${tableStyles.colors.negative}`}>
+                {equipo.estadisticas.golesEnContra}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} mb-1`}>DIF</div>
+              <div className={`${tableStyles.text.highlighted.mobile} md:${tableStyles.text.highlighted.desktop} font-bold ${equipo.estadisticas.diferencia >= 0 ? tableStyles.colors.positive : tableStyles.colors.negative}`}>
+                {equipo.estadisticas.diferencia > 0 ? '+' : ''}{equipo.estadisticas.diferencia}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Formulario para agregar/editar jugador */}
       {showForm && (
-        <Card>
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle>
-              {editingJugador ? 'Editar Jugador' : 'Agregar Jugador a'} {equipo.nombre}
+              {editingJugador ? 'Editar Jugador' : 'Agregar Jugador'}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -297,73 +334,102 @@ export default function EquipoDetailPage() {
         </Card>
       )}
 
+      {/* Jugadores */}
       <Card>
-        <CardHeader>
-          <CardTitle>Jugadores del Equipo</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Jugadores</CardTitle>
+          {!showForm && (
+            <Button 
+              onClick={() => {
+                setEditingJugador(undefined)
+                setShowForm(true)
+                reset({
+                  nombre: '',
+                  apellido: '',
+                  numero: undefined,
+                  fechaNac: undefined,
+                  estado: 'activo',
+                  equipoId: equipo?.id || slugOrId,
+                })
+              }}
+              className="bg-[#852024] hover:bg-[#6a1a1d] text-white"
+            >
+              Agregar Jugador
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           {jugadoresLoading ? (
-            <div>Cargando jugadores...</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Número</TableHead>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Apellido</TableHead>
-                  <TableHead>Fecha Nac.</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {jugadores && jugadores.length > 0 ? (
-                  jugadores.map((jugador) => (
-                    <TableRow key={jugador.id}>
-                      <TableCell>{jugador.numero || '-'}</TableCell>
-                      <TableCell className="font-medium">
+            <div className="text-center py-4">Cargando jugadores...</div>
+          ) : jugadores && jugadores.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {jugadores.map((jugador) => (
+                <div
+                  key={jugador.id}
+                  className={`${tableStyles.backgrounds.table} ${tableStyles.borders.table} ${tableStyles.shadows.card} p-3 rounded-lg relative group`}
+                >
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-3">
+                    {jugador.foto ? (
+                      <CustomImage
+                        src={jugador.foto}
+                        alt={`${jugador.nombre} ${jugador.apellido}`}
+                        width={60}
+                        height={60}
+                        className="rounded-lg flex-shrink-0"
+                        square={true}
+                      />
+                    ) : (
+                      <div className="w-[60px] h-[60px] rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                        <span className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted} font-medium`}>
+                          {jugador.nombre.charAt(0)}{jugador.apellido.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex flex-col text-center md:text-left flex-1 min-w-0">
+                      <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
                         {jugador.nombre}
-                      </TableCell>
-                      <TableCell>{jugador.apellido}</TableCell>
-                      <TableCell>{formatDate(jugador.fechaNac)}</TableCell>
-                      <TableCell>
-                        <Badge variant={getEstadoBadge(jugador.estado)}>
-                          {jugador.estado}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingJugador(jugador)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(jugador.id)}
-                          >
-                            Eliminar
-                          </Button>
+                      </div>
+                      <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
+                        {jugador.apellido}
+                      </div>
+                      {jugador.numero && (
+                        <div className={`${tableStyles.text.secondary.mobile} md:${tableStyles.text.secondary.desktop} font-semibold ${tableStyles.colors.secondary} mt-1`}>
+                          #{jugador.numero}
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      No hay jugadores en este equipo. Agrega el primero haciendo clic en &quot;Agregar Jugador&quot;
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                      )}
+                    </div>
+                  </div>
+                  {/* Botones de acción */}
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7"
+                      onClick={() => setEditingJugador(jugador)}
+                      title="Editar"
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="h-7 w-7"
+                      onClick={() => handleDelete(jugador.id)}
+                      title="Eliminar"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className={`${tableStyles.colors.muted} text-center py-4`}>
+              No hay jugadores registrados en este equipo
+            </p>
           )}
         </CardContent>
       </Card>
     </div>
   )
 }
-
