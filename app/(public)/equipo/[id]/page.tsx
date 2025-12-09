@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Loader } from '@/components/ui/loader'
 
 export default function EquipoPage() {
   const params = useParams()
@@ -33,8 +34,8 @@ export default function EquipoPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Cargando equipo...</div>
+      <div className="container mx-auto px-4 py-8 flex justify-center items-center">
+        <Loader />
       </div>
     )
   }

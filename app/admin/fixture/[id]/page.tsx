@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/table'
 import Link from 'next/link'
 import { formatDateTimeUTC, formatDateUTC } from '@/lib/utils/date'
+import { Loader } from '@/components/ui/loader'
 
 export default function FechaDetailPage() {
   const params = useParams()
@@ -143,7 +144,11 @@ export default function FechaDetailPage() {
   }, [partidos, equipos])
 
   if (isLoading) {
-    return <div>Cargando fecha...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   if (!fecha) {
@@ -284,7 +289,9 @@ export default function FechaDetailPage() {
         </CardHeader>
         <CardContent>
           {partidosLoading ? (
-            <div>Cargando partidos...</div>
+            <div className="flex justify-center items-center py-8">
+              <Loader />
+            </div>
           ) : (
             <Table>
               <TableHeader>

@@ -20,7 +20,7 @@ export const publicidadSchema = z.object({
     .or(z.literal('')),
   activa: z.boolean().default(true),
   posicion: z
-    .enum(['banner', 'sidebar', 'footer', 'header'], {
+    .enum(['banner', 'footer', 'sponsor'], {
       errorMap: () => ({ message: 'Posición inválida' }),
     })
     .optional()

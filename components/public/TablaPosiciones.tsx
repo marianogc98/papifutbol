@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { CustomImage } from '@/components/ui/Image'
 import { ChevronDown } from 'lucide-react'
 import { tableStyles } from '@/lib/constants/tableStyles'
+import { Loader } from '@/components/ui/loader'
 
 interface TablaPosicionesProps {
   mostrarTodos?: boolean
@@ -30,7 +31,7 @@ export function TablaPosiciones({ mostrarTodos = false }: TablaPosicionesProps =
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <p className="text-muted-foreground">Cargando tabla de equipos...</p>
+        <Loader />
       </div>
     )
   }

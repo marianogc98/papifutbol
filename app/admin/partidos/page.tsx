@@ -19,6 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import Link from 'next/link'
+import { Loader } from '@/components/ui/loader'
 
 export default function PartidosPage() {
   const pathname = usePathname()
@@ -115,7 +116,11 @@ export default function PartidosPage() {
   }, [partidos])
 
   if (isLoading) {
-    return <div>Cargando partidos...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   return (
@@ -214,7 +219,7 @@ export default function PartidosPage() {
                           <div className="flex justify-end gap-2">
                             <Link href={`/admin/resultados/${partido.id}`}>
                               <Button 
-                                variant="outline" 
+                                variant="ghost" 
                                 size="icon"
                                 className="h-8 w-8"
                                 title="Ver Resultado"
@@ -223,7 +228,7 @@ export default function PartidosPage() {
                               </Button>
                             </Link>
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                               onClick={() => handleEdit(partido)}
@@ -232,9 +237,9 @@ export default function PartidosPage() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
                               onClick={() => handleDelete(partido.id)}
                               title="Eliminar"
                             >

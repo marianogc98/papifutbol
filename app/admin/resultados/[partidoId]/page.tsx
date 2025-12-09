@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Loader } from '@/components/ui/loader'
 
 export default function ResultadoPage() {
   const params = useParams()
@@ -254,7 +255,11 @@ export default function ResultadoPage() {
   }
 
   if (isLoading) {
-    return <div>Cargando partido...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   if (!partido) {

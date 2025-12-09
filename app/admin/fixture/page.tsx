@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Loader } from '@/components/ui/loader'
 
 export default function FechasPage() {
   const pathname = usePathname()
@@ -73,7 +74,11 @@ export default function FechasPage() {
   }, [fechas])
 
   if (isLoading) {
-    return <div>Cargando fechas...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   return (
@@ -132,7 +137,7 @@ export default function FechasPage() {
                           <div className="flex justify-end gap-2">
                             <Link href={`/admin/fixture/${fecha.slug || fecha.id}`}>
                               <Button 
-                                variant="outline" 
+                                variant="ghost" 
                                 size="icon"
                                 className="h-8 w-8"
                                 title="Ver Partidos"
@@ -141,7 +146,7 @@ export default function FechasPage() {
                               </Button>
                             </Link>
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                               onClick={() => handleEdit(fecha)}
@@ -150,9 +155,9 @@ export default function FechasPage() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
                               onClick={() => handleDelete(fecha.id)}
                               title="Eliminar"
                             >

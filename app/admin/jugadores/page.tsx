@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Loader } from '@/components/ui/loader'
 
 export default function JugadoresPage() {
   const pathname = usePathname()
@@ -60,7 +61,11 @@ export default function JugadoresPage() {
   }
 
   if (isLoading) {
-    return <div>Cargando jugadores...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   return (
@@ -114,7 +119,7 @@ export default function JugadoresPage() {
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                               onClick={() => handleEdit(jugador)}
@@ -123,9 +128,9 @@ export default function JugadoresPage() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
                               onClick={() => handleDelete(jugador.id)}
                               title="Eliminar"
                             >

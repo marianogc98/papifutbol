@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CustomImage } from '@/components/ui/Image'
 import { tableStyles } from '@/lib/constants/tableStyles'
 import { Pencil, Trash2 } from 'lucide-react'
+import { Loader } from '@/components/ui/loader'
 
 export default function EquipoDetailPage() {
   const params = useParams()
@@ -124,8 +125,8 @@ export default function EquipoDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="w-full">
-        <div className="text-center">Cargando equipo...</div>
+      <div className="w-full flex justify-center items-center py-8">
+        <Loader />
       </div>
     )
   }
@@ -360,7 +361,9 @@ export default function EquipoDetailPage() {
         </CardHeader>
         <CardContent>
           {jugadoresLoading ? (
-            <div className="text-center py-4">Cargando jugadores...</div>
+            <div className="flex justify-center items-center py-8">
+              <Loader />
+            </div>
           ) : jugadores && jugadores.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {jugadores.map((jugador) => (
@@ -402,7 +405,7 @@ export default function EquipoDetailPage() {
                   {/* Botones de acción */}
                   <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
                       className="h-7 w-7"
                       onClick={() => setEditingJugador(jugador)}
@@ -411,9 +414,9 @@ export default function EquipoDetailPage() {
                       <Pencil className="h-3 w-3" />
                     </Button>
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="icon"
-                      className="h-7 w-7"
+                      className="h-7 w-7 text-destructive hover:text-destructive"
                       onClick={() => handleDelete(jugador.id)}
                       title="Eliminar"
                     >

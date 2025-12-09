@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Loader } from '@/components/ui/loader'
 
 export function TablaFechas() {
   const { data: fechas, isLoading, error } = useFechas()
@@ -16,7 +17,7 @@ export function TablaFechas() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <p className="text-muted-foreground">Cargando fechas...</p>
+        <Loader />
       </div>
     )
   }

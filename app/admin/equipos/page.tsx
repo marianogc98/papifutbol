@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Loader } from '@/components/ui/loader'
 
 export default function EquiposPage() {
   const pathname = usePathname()
@@ -62,7 +63,11 @@ export default function EquiposPage() {
 
 
   if (isLoading) {
-    return <div>Cargando equipos...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   // Ordenar equipos por vidas (mayor a menor)
@@ -120,7 +125,7 @@ export default function EquiposPage() {
                           <div className="flex justify-end gap-2">
                             <Link href={`/admin/equipos/${equipo.slug || equipo.id}`}>
                               <Button 
-                                variant="outline" 
+                                variant="ghost" 
                                 size="icon"
                                 className="h-8 w-8"
                                 title="Ver Detalle"
@@ -129,7 +134,7 @@ export default function EquiposPage() {
                               </Button>
                             </Link>
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="icon"
                               className="h-8 w-8"
                               onClick={() => handleEdit(equipo)}
@@ -138,9 +143,9 @@ export default function EquiposPage() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant="destructive"
+                              variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
                               onClick={() => handleDelete(equipo.id)}
                               title="Eliminar"
                             >

@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Loader } from '@/components/ui/loader'
 
 export default function PublicidadesPage() {
   const pathname = usePathname()
@@ -65,7 +66,11 @@ export default function PublicidadesPage() {
   }
 
   if (isLoading) {
-    return <div>Cargando publicidades...</div>
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Loader />
+      </div>
+    )
   }
 
   if (!isSuperAdmin) {
@@ -147,15 +152,16 @@ export default function PublicidadesPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(publicidad)}
                           >
                             Editar
                           </Button>
                           <Button
-                            variant="destructive"
+                            variant="ghost"
                             size="sm"
+                            className="text-destructive hover:text-destructive"
                             onClick={() => handleDelete(publicidad.id)}
                           >
                             Eliminar

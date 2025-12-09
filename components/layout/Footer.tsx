@@ -9,6 +9,7 @@ export function Footer() {
     { href: '/posiciones', label: 'Posiciones' },
     { href: '/fixture', label: 'Fixture' },
     { href: '/goleadores', label: 'Goleadores' },
+    { href: '/sponsors', label: 'Sponsors' },
   ]
 
   return (

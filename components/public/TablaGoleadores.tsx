@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { useGoleadores } from '@/lib/api/goleadores'
 import Link from 'next/link'
 import { CustomImage } from '@/components/ui/Image'
-import {ChevronDown } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { tableStyles } from '@/lib/constants/tableStyles'
+import { Loader } from '@/components/ui/loader'
 
 interface TablaGoleadoresProps {
   mostrarTodos?: boolean
@@ -18,7 +19,7 @@ export function TablaGoleadores({ mostrarTodos = false }: TablaGoleadoresProps =
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <p className="text-muted-foreground">Cargando tabla de goleadores...</p>
+        <Loader />
       </div>
     )
   }

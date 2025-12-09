@@ -83,7 +83,7 @@ export function useUpdatePublicidad() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: PublicidadFormData }) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/publicidades/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -109,7 +109,7 @@ export function useDeletePublicidad() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/publicidades/${id}`), {
         method: 'DELETE',
       })
 

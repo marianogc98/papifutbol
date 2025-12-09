@@ -110,11 +110,15 @@ export function PublicidadForm({ publicidad, onSuccess }: PublicidadFormProps) {
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <option value="">Sin posición específica</option>
-          <option value="banner">Banner</option>
-          <option value="sidebar">Sidebar</option>
-          <option value="footer">Footer</option>
-          <option value="header">Header</option>
+          <option value="banner">🥇 Oro - Banner (Hero en Home)</option>
+          <option value="footer">🥈 Plata - Footer (Arriba del footer)</option>
+          <option value="sponsor">🥉 Bronce - Sponsor (Página Sponsors)</option>
         </select>
+        <p className="text-sm text-muted-foreground">
+          <strong>Oro:</strong> Hero principal solo en página de inicio<br />
+          <strong>Plata:</strong> Arriba del footer en todas las páginas<br />
+          <strong>Bronce:</strong> Grid en página de sponsors
+        </p>
         {errors.posicion && (
           <p className="text-sm text-destructive">{errors.posicion.message}</p>
         )}

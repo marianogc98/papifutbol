@@ -7,6 +7,7 @@ import { TablaResultados } from '@/components/public/TablaResultados'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { tableStyles } from '@/lib/constants/tableStyles'
+import { Loader } from '@/components/ui/loader'
 
 interface TablaUltimaFechaProps {
   soloConPartidos?: boolean // Si true, solo muestra fechas con partidos (comportamiento home)
@@ -166,7 +167,7 @@ export function TablaUltimaFecha({
   if (fechasLoading || partidosLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <p className="text-muted-foreground">Cargando fechas...</p>
+        <Loader />
       </div>
     )
   }

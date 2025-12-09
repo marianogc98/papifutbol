@@ -1,6 +1,5 @@
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { PublicidadBanner } from '@/components/public/PublicidadBanner'
 
 export default function PublicLayout({
   children,
@@ -10,11 +9,9 @@ export default function PublicLayout({
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f2f2f2' }}>
       <Navbar />
-      <PublicidadBanner posicion="header" className="w-full border-b" />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1">
         {children}
       </main>
-      <PublicidadBanner posicion="footer" className="w-full border-t py-4" />
       <Footer />
     </div>
   )
