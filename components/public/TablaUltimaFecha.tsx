@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { tableStyles } from '@/lib/constants/tableStyles'
 import { Loader } from '@/components/ui/loader'
+import { formatDateUTC } from '@/lib/utils/date'
 
 interface TablaUltimaFechaProps {
   soloConPartidos?: boolean // Si true, solo muestra fechas con partidos (comportamiento home)
@@ -194,10 +195,7 @@ export function TablaUltimaFecha({
               {fecha.nombre || `Fecha ${fecha.numero}`}
             </h2>
             <p className="text-gray-500 text-sm mt-1">
-              {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-              })}
+              {formatDateUTC(fecha.fecha).split('/').slice(0, 2).join('/')}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -241,10 +239,7 @@ export function TablaUltimaFecha({
                 {fecha.nombre || `Fecha ${fecha.numero}`}
               </h1>
               <p className="text-gray-500 text-sm mt-2">
-                {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: '2-digit',
-                })}
+                {formatDateUTC(fecha.fecha).split('/').slice(0, 2).join('/')}
               </p>
             </div>
             <Button
@@ -276,10 +271,7 @@ export function TablaUltimaFecha({
             {fecha.nombre || `Fecha ${fecha.numero}`}
           </h2>
           <p className="text-gray-500 text-sm mt-1">
-            {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: '2-digit',
-            })}
+            {formatDateUTC(fecha.fecha).split('/').slice(0, 2).join('/')}
           </p>
         </div>
         <div className="flex items-center gap-2">

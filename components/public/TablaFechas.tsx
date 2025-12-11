@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Loader } from '@/components/ui/loader'
+import { formatDateUTC } from '@/lib/utils/date'
 
 export function TablaFechas() {
   const { data: fechas, isLoading, error } = useFechas()
@@ -55,11 +56,7 @@ export function TablaFechas() {
               <TableCell className="font-medium">{fecha.numero}</TableCell>
               <TableCell>{fecha.nombre || '-'}</TableCell>
               <TableCell>
-                {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })}
+                {formatDateUTC(fecha.fecha)}
               </TableCell>
               <TableCell>
                 {fecha._count?.partidos || 0} partido

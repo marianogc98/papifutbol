@@ -161,11 +161,7 @@ export default function PartidosPage() {
                   >
                     <option value="">Seleccionar fecha</option>
                     {fechas?.map((fecha) => {
-                      const fechaFormateada = new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: '2-digit',
-                      })
+                      const fechaFormateada = formatDateUTC(fecha.fecha)
                       return (
                         <option key={fecha.id} value={fecha.id}>
                           {fecha.nombre || `Fecha ${fecha.numero}`} - {fechaFormateada}
@@ -216,11 +212,7 @@ export default function PartidosPage() {
                   {partidosOrdenados && partidosOrdenados.length > 0 ? (
                     partidosOrdenados.map((partido) => {
                       const fechaFormateada = partido.fechaHora 
-                        ? new Date(partido.fechaHora).toLocaleDateString('es-ES', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: '2-digit',
-                          })
+                        ? formatDateUTC(partido.fechaHora)
                         : '-'
                       return (
                       <TableRow key={partido.id}>
