@@ -35,8 +35,8 @@ const getEstadoLabel = (estado: string) => {
     jugado: 'Jugado',
     suspendido: 'Suspendido',
     cancelado: 'Cancelado',
-    no_se_presento_local: 'W.O. (Local)',
-    no_se_presento_visitante: 'W.O. (Visitante)',
+    no_se_presento_local: 'No se presentó Local',
+    no_se_presento_visitante: 'No se presentó Visitante',
   }
   return labels[estado] || estado
 }

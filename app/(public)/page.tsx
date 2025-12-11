@@ -1,11 +1,16 @@
+'use client'
+
 import { PublicidadBanner } from '@/components/public/PublicidadBanner'
 import { NoticiasSlide } from '@/components/public/NoticiasSlide'
 import { TablaPosiciones } from '@/components/public/TablaPosiciones'
 import { TablaUltimaFecha } from '@/components/public/TablaUltimaFecha'
 import { TablaGoleadores } from '@/components/public/TablaGoleadores'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useGoleadores } from '@/lib/api/goleadores'
 
 export default function HomePage() {
+  const { data: goleadores } = useGoleadores()
+  const hayGoleadores = goleadores && goleadores.length > 0
+
   return (
     <>
       {/* Banner de publicidad principal - Ancho completo */}
@@ -35,8 +40,8 @@ export default function HomePage() {
       {/* Tabla de Posiciones - La más importante */}
       <TablaPosiciones />
 
-      {/* Tabla de Goleadores */}
-      <TablaGoleadores />
+      {/* Tabla de Goleadores - Solo se muestra si hay goleadores */}
+      {hayGoleadores && <TablaGoleadores />}
 
       {/* Publicidad Plata - Banner Secundario */}
       <div className="w-full">

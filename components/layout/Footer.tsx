@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Facebook, Instagram, Mail, Phone } from 'lucide-react'
+import Image from 'next/image'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -47,7 +48,7 @@ export function Footer() {
           {/* Enlaces Rápidos */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Enlaces Rápidos</h3>
-            <nav className="flex flex-col gap-2">
+            <nav className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -61,11 +62,25 @@ export function Footer() {
           </div>
 
           {/* Información del Club */}
-          <div>
-            <h3 className="text-white font-bold text-lg mb-4">Papi Fútbol</h3>
-            <p className="text-white text-sm opacity-90 mb-4">
-              Torneo 2025
-            </p>
+          <div className="flex flex-col items-left justify-between">
+            <Link href="/" className="flex items-center gap-3 mb-4 hover:opacity-90 transition-opacity w-fit">
+              <div className="bg-white rounded-xl p-2">
+                <Image
+                  src="/images/logo.png"
+                  alt="Papi Fútbol"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+              <div className="text-white">
+                <h3 className="text-white font-bold text-lg">Papi Fútbol</h3>
+                <p className="text-white text-sm opacity-90">
+                  Torneo 2025
+                </p>
+              </div>
+            </Link>
             <p className="text-white text-xs opacity-75">
               © {currentYear} Todos los derechos reservados
             </p>

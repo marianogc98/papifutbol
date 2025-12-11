@@ -49,7 +49,7 @@ export default function EquipoPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Header con escudo, nombre y vidas */}
       <div className="mb-6">
         <div className="flex items-center justify-between gap-4">

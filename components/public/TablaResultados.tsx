@@ -124,7 +124,7 @@ export function TablaResultados({
               <th className="px-6 py-4 text-right text-xs font-medium uppercase tracking-wider w-64">
                 Visitante
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider w-32">
+              <th className="px-6 py-4 text-center text-xs font-medium uppercase tracking-wider w-32">
                 Estado
               </th>
             </tr>

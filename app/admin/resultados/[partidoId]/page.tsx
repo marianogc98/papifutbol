@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Loader } from '@/components/ui/loader'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Plus, Minus } from 'lucide-react'
 
 export default function ResultadoPage() {
   const params = useParams()
@@ -155,22 +155,52 @@ export default function ResultadoPage() {
     }
   }
 
-  const handleActualizarGolesEquipo = async () => {
+  const handleActualizarGolesEquipo = async (nuevosGolesLocal?: number, nuevosGolesVisitante?: number) => {
     setError('')
-    setSuccess('')
     try {
+      const golesLocal = nuevosGolesLocal !== undefined ? nuevosGolesLocal : golesLocalInput
+      const golesVisitante = nuevosGolesVisitante !== undefined ? nuevosGolesVisitante : golesVisitanteInput
+      
       await actualizarGolesEquipo.mutateAsync({
         partidoId,
         data: {
-          golesLocal: golesLocalInput,
-          golesVisitante: golesVisitanteInput,
+          golesLocal,
+          golesVisitante,
         },
       })
-      setSuccess('Goles actualizados')
       refetch()
-      setTimeout(() => setSuccess(''), 2000)
     } catch (err: any) {
       setError(err.message || 'Error al actualizar goles')
+    }
+  }
+
+  const handleIncrementarGolLocal = async () => {
+    const nuevoValor = golesLocalInput + 1
+    setGolesLocalInput(nuevoValor)
+    await handleActualizarGolesEquipo(nuevoValor, undefined)
+  }
+
+  const handleDecrementarGolLocal = async () => {
+    const nuevoValor = Math.max(0, golesLocalInput - 1)
+    // No permitir bajar por debajo de los goles asignados
+    if (nuevoValor >= golesAsignados.local) {
+      setGolesLocalInput(nuevoValor)
+      await handleActualizarGolesEquipo(nuevoValor, undefined)
+    }
+  }
+
+  const handleIncrementarGolVisitante = async () => {
+    const nuevoValor = golesVisitanteInput + 1
+    setGolesVisitanteInput(nuevoValor)
+    await handleActualizarGolesEquipo(undefined, nuevoValor)
+  }
+
+  const handleDecrementarGolVisitante = async () => {
+    const nuevoValor = Math.max(0, golesVisitanteInput - 1)
+    // No permitir bajar por debajo de los goles asignados
+    if (nuevoValor >= golesAsignados.visitante) {
+      setGolesVisitanteInput(nuevoValor)
+      await handleActualizarGolesEquipo(undefined, nuevoValor)
     }
   }
 
@@ -181,19 +211,16 @@ export default function ResultadoPage() {
     }
 
     setError('')
-    setSuccess('')
     try {
       await agregarGol.mutateAsync({
         partidoId,
         data: nuevoGol,
       })
-      setSuccess('Gol agregado')
       setNuevoGol({
         jugadorId: '',
         equipoId: nuevoGol.equipoId,
       })
       refetch()
-      setTimeout(() => setSuccess(''), 2000)
     } catch (err: any) {
       setError(err.message || 'Error al agregar gol')
     }
@@ -203,12 +230,9 @@ export default function ResultadoPage() {
     if (!confirm('¿Estás seguro de eliminar este gol?')) return
 
     setError('')
-    setSuccess('')
     try {
       await eliminarGol.mutateAsync({ partidoId, golId })
-      setSuccess('Gol eliminado')
       refetch()
-      setTimeout(() => setSuccess(''), 2000)
     } catch (err: any) {
       setError(err.message || 'Error al eliminar gol')
     }
@@ -303,19 +327,6 @@ export default function ResultadoPage() {
       {/* ============================================ */}
       {esModoEnVivo ? (
         <div className="space-y-6">
-          {/* Botón para finalizar partido */}
-          <Card>
-            <CardContent className="pt-6">
-              <Button
-                onClick={handleFinalizarPartido}
-                variant="outline"
-                className="w-full"
-              >
-                Finalizar Partido
-              </Button>
-            </CardContent>
-          </Card>
-
           {/* Goles del Equipo (Actualizable en tiempo real) */}
           <Card>
             <CardHeader>
@@ -324,52 +335,68 @@ export default function ResultadoPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
-                  <Label htmlFor="golesLocal">
+                  <Label>
                     {partido.equipoLocal.nombre}
                   </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="golesLocal"
-                      type="number"
-                      value={golesLocalInput}
-                      onChange={(e) => setGolesLocalInput(parseInt(e.target.value) || 0)}
-                      min="0"
-                      className="text-2xl font-bold text-center"
-                    />
+                  <div className="flex items-center gap-3 justify-center">
                     <Button
                       type="button"
-                      onClick={handleActualizarGolesEquipo}
-                      disabled={actualizarGolesEquipo.isPending}
+                      onClick={handleDecrementarGolLocal}
+                      disabled={actualizarGolesEquipo.isPending || golesLocalInput === 0 || golesLocalInput <= golesAsignados.local}
+                      variant="outline"
+                      size="icon"
+                      className="h-12 w-12"
                     >
-                      {actualizarGolesEquipo.isPending ? '...' : 'Actualizar'}
+                      <Minus className="h-5 w-5" />
+                    </Button>
+                    <div className="text-4xl font-bold min-w-[60px] text-center">
+                      {golesLocalInput}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleIncrementarGolLocal}
+                      disabled={actualizarGolesEquipo.isPending}
+                      variant="outline"
+                      size="icon"
+                      className="h-12 w-12"
+                    >
+                      <Plus className="h-5 w-5" />
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground text-center">
                     {golesAsignados.local} de {golesLocalInput} goles asignados
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="golesVisitante">
+                  <Label>
                     {partido.equipoVisitante.nombre}
                   </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="golesVisitante"
-                      type="number"
-                      value={golesVisitanteInput}
-                      onChange={(e) => setGolesVisitanteInput(parseInt(e.target.value) || 0)}
-                      min="0"
-                      className="text-2xl font-bold text-center"
-                    />
+                  <div className="flex items-center gap-3 justify-center">
                     <Button
                       type="button"
-                      onClick={handleActualizarGolesEquipo}
-                      disabled={actualizarGolesEquipo.isPending}
+                      onClick={handleDecrementarGolVisitante}
+                      disabled={actualizarGolesEquipo.isPending || golesVisitanteInput === 0 || golesVisitanteInput <= golesAsignados.visitante}
+                      variant="outline"
+                      size="icon"
+                      className="h-12 w-12"
                     >
-                      {actualizarGolesEquipo.isPending ? '...' : 'Actualizar'}
+                      <Minus className="h-5 w-5" />
+                    </Button>
+                    <div className="text-4xl font-bold min-w-[60px] text-center">
+                      {golesVisitanteInput}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleIncrementarGolVisitante}
+                      disabled={actualizarGolesEquipo.isPending}
+                      variant="outline"
+                      size="icon"
+                      className="h-12 w-12"
+                    >
+                      <Plus className="h-5 w-5" />
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground text-center">
                     {golesAsignados.visitante} de {golesVisitanteInput} goles asignados
                   </p>
                 </div>
@@ -472,6 +499,19 @@ export default function ResultadoPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Botón para finalizar partido */}
+          <Card>
+            <CardContent className="pt-6">
+              <Button
+                onClick={handleFinalizarPartido}
+                variant="outline"
+                className="w-full"
+              >
+                Finalizar Partido
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       ) : partido.estado === 'pendiente' ? (
         /* ============================================ */
@@ -517,8 +557,8 @@ export default function ResultadoPage() {
                   <option value="jugado">Jugado</option>
                   <option value="suspendido">Suspendido</option>
                   <option value="cancelado">Cancelado</option>
-                  <option value="no_se_presento_local">No se presentó Local (W.O.)</option>
-                  <option value="no_se_presento_visitante">No se presentó Visitante (W.O.)</option>
+                  <option value="no_se_presento_local">No se presentó Local</option>
+                  <option value="no_se_presento_visitante">No se presentó Visitante</option>
                 </select>
                 {errors.estado && (
                   <p className="text-sm text-destructive">{errors.estado.message}</p>
