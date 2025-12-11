@@ -5,11 +5,26 @@ import { Card, CardContent } from '@/components/ui/card'
 import { usePublicidades } from '@/lib/api/publicidades'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useEffect, useRef } from 'react'
+import { trackPublicidadView, trackPublicidadClick } from '@/lib/utils/umami'
 
 export default function SponsorsPage() {
   const { data: sponsors, isLoading } = usePublicidades()
+  const viewedSponsorsRef = useRef<Set<string>>(new Set())
   
   const sponsorsBronce = sponsors?.filter((s) => s.posicion === 'sponsor') || []
+
+  // Trackear vistas de sponsors cuando se cargan
+  useEffect(() => {
+    if (sponsorsBronce.length === 0) return
+
+    sponsorsBronce.forEach((sponsor) => {
+      if (!viewedSponsorsRef.current.has(sponsor.id)) {
+        trackPublicidadView(sponsor.id, sponsor.titulo, 'sponsor')
+        viewedSponsorsRef.current.add(sponsor.id)
+      }
+    })
+  }, [sponsorsBronce])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,6 +83,12 @@ export default function SponsorsPage() {
                   </Card>
                 )
 
+                const handleSponsorClick = () => {
+                  if (sponsor.url) {
+                    trackPublicidadClick(sponsor.id, sponsor.titulo, sponsor.url, 'sponsor')
+                  }
+                }
+
                 if (sponsor.url) {
                   return (
                     <Link
@@ -76,6 +97,7 @@ export default function SponsorsPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"
+                      onClick={handleSponsorClick}
                     >
                       {contenido}
                     </Link>

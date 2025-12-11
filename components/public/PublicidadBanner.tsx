@@ -3,7 +3,8 @@
 import { usePublicidades } from '@/lib/api/publicidades'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { trackPublicidadView, trackPublicidadClick } from '@/lib/utils/umami'
 
 interface PublicidadBannerProps {
   posicion?: 'banner' | 'footer' | 'sponsor'
@@ -14,6 +15,7 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
   const { data: publicidades, isLoading } = usePublicidades()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const viewedPublicidadesRef = useRef<Set<string>>(new Set())
 
   // Filtrar por posición si se especifica
   const publicidadesFiltradas = posicion
@@ -22,6 +24,18 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
 
   // Ordenar por el campo 'orden'
   const publicidadesOrdenadas = [...publicidadesFiltradas].sort((a, b) => a.orden - b.orden)
+
+  // Trackear vista de publicidad cuando cambia el índice o se monta el componente
+  useEffect(() => {
+    if (publicidadesOrdenadas.length === 0) return
+
+    const currentPublicidad = publicidadesOrdenadas[currentIndex]
+    if (currentPublicidad && !viewedPublicidadesRef.current.has(currentPublicidad.id)) {
+      // Trackear vista solo una vez por publicidad en esta sesión
+      trackPublicidadView(currentPublicidad.id, currentPublicidad.titulo, posicion || null)
+      viewedPublicidadesRef.current.add(currentPublicidad.id)
+    }
+  }, [currentIndex, publicidadesOrdenadas, posicion])
 
   // Auto-play del slider cada 4 segundos
   useEffect(() => {
@@ -146,6 +160,17 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
     </div>
   )
 
+  const handleClick = () => {
+    if (currentPublicidad.url) {
+      trackPublicidadClick(
+        currentPublicidad.id,
+        currentPublicidad.titulo,
+        currentPublicidad.url,
+        posicion || null
+      )
+    }
+  }
+
   return (
     <div className={className}>
       {/* Contenido con link si tiene URL */}
@@ -155,6 +180,7 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
           target="_blank"
           rel="noopener noreferrer"
           className="block hover:opacity-95 transition-opacity"
+          onClick={handleClick}
         >
           {contenido}
         </Link>
