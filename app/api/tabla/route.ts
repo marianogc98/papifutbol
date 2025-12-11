@@ -17,11 +17,7 @@ export async function GET(request: NextRequest) {
             estado: 'jugado',
           },
         },
-        goles: {
-          where: {
-            esAutogol: false,
-          },
-        },
+        goles: true,
       },
     })
 
