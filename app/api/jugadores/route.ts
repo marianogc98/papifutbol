@@ -26,7 +26,6 @@ export async function GET(request: NextRequest) {
       },
       orderBy: [
         { equipo: { nombre: 'asc' } },
-        { numero: 'asc' },
         { apellido: 'asc' },
       ],
     })
@@ -53,27 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    
-    // Convertir fechaNac de string ISO a Date si viene como string válido
-    let fechaNacConvertida: Date | null = null
-    
-    if (body.fechaNac && body.fechaNac !== null && body.fechaNac !== '') {
-      if (body.fechaNac instanceof Date) {
-        fechaNacConvertida = body.fechaNac
-      } else if (typeof body.fechaNac === 'string') {
-        const fecha = new Date(body.fechaNac)
-        if (!isNaN(fecha.getTime())) {
-          fechaNacConvertida = fecha
-        }
-      }
-    }
-    
-    const bodyWithDate = {
-      ...body,
-      fechaNac: fechaNacConvertida,
-    }
-    
-    const validatedData = jugadorSchema.parse(bodyWithDate)
+    const validatedData = jugadorSchema.parse(body)
 
     // Si tiene equipo, verificar que exista
     if (validatedData.equipoId) {
@@ -87,32 +66,12 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
-
-      // Si tiene número, verificar que no esté en uso en ese equipo
-      if (validatedData.numero) {
-        const numeroEnUso = await prisma.jugador.findFirst({
-          where: {
-            equipoId: validatedData.equipoId,
-            numero: validatedData.numero,
-            estado: 'activo',
-          },
-        })
-
-        if (numeroEnUso) {
-          return NextResponse.json(
-            { error: 'Ya existe un jugador activo con ese número en el equipo' },
-            { status: 400 }
-          )
-        }
-      }
     }
 
     const jugador = await prisma.jugador.create({
       data: {
         nombre: validatedData.nombre,
         apellido: validatedData.apellido,
-        numero: validatedData.numero,
-        fechaNac: validatedData.fechaNac,
         foto: validatedData.foto || null,
         estado: validatedData.estado,
         equipoId: validatedData.equipoId,

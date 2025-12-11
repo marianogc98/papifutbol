@@ -49,7 +49,7 @@ export default function EquipoPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="container mx-auto px-4 py-8">
       {/* Header con escudo, nombre y vidas */}
       <div className="mb-6">
         <div className="flex items-center justify-between gap-4">
@@ -170,11 +170,6 @@ export default function EquipoPage() {
                       <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
                         {jugador.apellido}
                       </div>
-                      {jugador.numero && (
-                        <div className={`${tableStyles.text.secondary.mobile} md:${tableStyles.text.secondary.desktop} font-semibold ${tableStyles.colors.secondary} mt-1`}>
-                          #{jugador.numero}
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>

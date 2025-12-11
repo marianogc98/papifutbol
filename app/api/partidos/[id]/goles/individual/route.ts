@@ -75,7 +75,6 @@ export async function POST(
       where: {
         partidoId: params.id,
         equipoId: validatedData.equipoId,
-        esAutogol: false,
       },
     })
 
@@ -96,8 +95,6 @@ export async function POST(
         partidoId: params.id,
         jugadorId: validatedData.jugadorId,
         equipoId: validatedData.equipoId,
-        esPenal: validatedData.esPenal,
-        esAutogol: validatedData.esAutogol,
       },
       include: {
         jugador: {

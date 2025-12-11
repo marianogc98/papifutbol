@@ -21,6 +21,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Loader } from '@/components/ui/loader'
+import { Trash2 } from 'lucide-react'
 
 export default function ResultadoPage() {
   const params = useParams()
@@ -51,8 +52,6 @@ export default function ResultadoPage() {
   const [nuevoGol, setNuevoGol] = useState<AgregarGolFormData>({
     jugadorId: '',
     equipoId: partido?.equipoLocalId || '',
-    esPenal: false,
-    esAutogol: false,
   })
 
   // Sincronizar estados locales con datos del partido
@@ -102,8 +101,6 @@ export default function ResultadoPage() {
         goles: partido.goles.map((g) => ({
           jugadorId: g.jugador.id,
           equipoId: g.equipoId,
-          esPenal: g.esPenal,
-          esAutogol: g.esAutogol,
         })),
       })
     }
@@ -121,10 +118,10 @@ export default function ResultadoPage() {
     if (!partido) return { local: 0, visitante: 0 }
     
     const local = partido.goles.filter(
-      g => g.equipoId === partido.equipoLocalId && !g.esAutogol
+      g => g.equipoId === partido.equipoLocalId
     ).length
     const visitante = partido.goles.filter(
-      g => g.equipoId === partido.equipoVisitanteId && !g.esAutogol
+      g => g.equipoId === partido.equipoVisitanteId
     ).length
     
     return { local, visitante }
@@ -194,8 +191,6 @@ export default function ResultadoPage() {
       setNuevoGol({
         jugadorId: '',
         equipoId: nuevoGol.equipoId,
-        esPenal: false,
-        esAutogol: false,
       })
       refetch()
       setTimeout(() => setSuccess(''), 2000)
@@ -285,7 +280,7 @@ export default function ResultadoPage() {
           {partido.equipoLocal.nombre} vs {partido.equipoVisitante.nombre}
         </p>
         {esModoEnVivo && (
-          <Badge variant="default" className="mt-2 bg-green-600">
+          <Badge variant="default" className="mt-2 bg-transparent">
             🟢
           </Badge>
         )}
@@ -327,7 +322,7 @@ export default function ResultadoPage() {
               <CardTitle>Goles del Partido</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
                   <Label htmlFor="golesLocal">
                     {partido.equipoLocal.nombre}
@@ -416,29 +411,10 @@ export default function ResultadoPage() {
                       {jugadoresEquipo(nuevoGol.equipoId).map((jugador) => (
                         <option key={jugador.id} value={jugador.id}>
                           {jugador.nombre} {jugador.apellido}
-                          {jugador.numero ? ` (${jugador.numero})` : ''}
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
-                <div className="flex gap-4">
-                  <Label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={nuevoGol.esPenal}
-                      onChange={(e) => setNuevoGol(prev => ({ ...prev, esPenal: e.target.checked }))}
-                    />
-                    Penal
-                  </Label>
-                  <Label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={nuevoGol.esAutogol}
-                      onChange={(e) => setNuevoGol(prev => ({ ...prev, esAutogol: e.target.checked }))}
-                    />
-                    Autogol
-                  </Label>
                 </div>
                 <Button
                   type="button"
@@ -472,24 +448,23 @@ export default function ResultadoPage() {
                       <div className="flex-1">
                         <div className="font-medium">
                           {gol.jugador.nombre} {gol.jugador.apellido}
-                          {gol.jugador.numero && ` (${gol.jugador.numero})`}
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {gol.equipoId === partido.equipoLocalId
                             ? partido.equipoLocal.nombre
                             : partido.equipoVisitante.nombre}
-                          {gol.esPenal && ' • Penal'}
-                          {gol.esAutogol && ' • Autogol'}
                         </div>
                       </div>
                       <Button
                         type="button"
-                        variant="destructive"
-                        size="sm"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
                         onClick={() => handleEliminarGol(gol.id)}
                         disabled={eliminarGol.isPending}
+                        title="Eliminar"
                       >
-                        Eliminar
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
@@ -559,7 +534,7 @@ export default function ResultadoPage() {
                 <CardTitle>Resultado</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="golesLocal">
                       Goles {partido.equipoLocal.nombre}
@@ -608,8 +583,6 @@ export default function ResultadoPage() {
                     onClick={() => appendGol({
                       jugadorId: '',
                       equipoId: partido.equipoLocalId,
-                      esPenal: false,
-                      esAutogol: false,
                     })}
                   >
                     Agregar Gol
@@ -644,36 +617,19 @@ export default function ResultadoPage() {
                           {jugadoresEquipo(watch(`goles.${index}.equipoId`)).map((jugador) => (
                             <option key={jugador.id} value={jugador.id}>
                               {jugador.nombre} {jugador.apellido}
-                              {jugador.numero ? ` (${jugador.numero})` : ''}
                             </option>
                           ))}
                         </select>
                       </div>
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            {...register(`goles.${index}.esPenal`)}
-                          />
-                          Penal
-                        </Label>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            {...register(`goles.${index}.esAutogol`)}
-                          />
-                          Autogol
-                        </Label>
-                      </div>
                       <Button
                         type="button"
-                        variant="destructive"
-                        size="sm"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
                         onClick={() => removeGol(index)}
+                        title="Eliminar"
                       >
-                        Eliminar
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}

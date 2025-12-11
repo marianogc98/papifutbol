@@ -59,8 +59,6 @@ model Jugador {
   id       String    @id @default(cuid())
   nombre   String
   apellido String
-  numero   Int?      // Número de camiseta (opcional)
-  fechaNac DateTime? // Fecha de nacimiento (opcional)
   foto     String?   // URL de la foto del jugador
   estado   String    @default("activo") // activo, lesionado, suspendido, dado_de_baja
   equipoId String?
@@ -136,8 +134,6 @@ model Gol {
   jugador   Jugador  @relation(fields: [jugadorId], references: [id], onDelete: Cascade)
   equipoId  String
   equipo    Equipo   @relation(fields: [equipoId], references: [id], onDelete: Cascade)
-  esPenal   Boolean  @default(false)
-  esAutogol Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@index([partidoId])

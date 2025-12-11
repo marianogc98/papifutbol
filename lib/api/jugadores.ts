@@ -6,8 +6,6 @@ export type Jugador = {
   id: string
   nombre: string
   apellido: string
-  numero: number | null
-  fechaNac: string | null
   foto: string | null
   estado: string
   equipoId: string | null
@@ -22,7 +20,6 @@ export type Jugador = {
 export type JugadorDetalle = Jugador & {
   goles: Array<{
     id: string
-    esPenal: boolean
     partido: {
       equipoLocal: { nombre: string }
       equipoVisitante: { nombre: string }

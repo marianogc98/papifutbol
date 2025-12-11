@@ -39,7 +39,7 @@ export function TablaResultados({
   const getGoleadores = (partido: Partido, equipoId: string) => {
     if (!partido.goles) return []
     return partido.goles
-      .filter(g => g.equipoId === equipoId && !g.esAutogol)
+      .filter(g => g.equipoId === equipoId)
       .map(g => ({
         nombre: g.jugador.nombre,
         apellido: g.jugador.apellido,

@@ -81,8 +81,6 @@ export async function POST(
             partidoId: params.partidoId,
             jugadorId: gol.jugadorId,
             equipoId: gol.equipoId,
-            esPenal: gol.esPenal,
-            esAutogol: gol.esAutogol,
           })),
         })
       }

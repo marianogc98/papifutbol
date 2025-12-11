@@ -2,7 +2,7 @@ import { TablaPosiciones } from '@/components/public/TablaPosiciones'
 
 export default function TablaPage() {
   return (
-    <div className="w-full">
+    <div className="container mx-auto px-4 py-8">
       <TablaPosiciones mostrarTodos={true} />
     </div>
   )

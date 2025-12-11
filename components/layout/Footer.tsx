@@ -10,6 +10,7 @@ export function Footer() {
     { href: '/fixture', label: 'Fixture' },
     { href: '/goleadores', label: 'Goleadores' },
     { href: '/sponsors', label: 'Sponsors' },
+    { href: '/publicidad', label: 'Publicidad' },
   ]
 
   return (

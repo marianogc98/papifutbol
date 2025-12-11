@@ -6,14 +6,11 @@ export type Goleador = {
     id: string
     nombre: string
     apellido: string
-    numero: number | null
     equipo: { id: string; nombre: string; slug: string; escudo: string | null } | null
   }
   totalGoles: number
-  penales: number
   goles: Array<{
     id: string
-    esPenal: boolean
     partido: {
       equipoLocal: { nombre: string }
       equipoVisitante: { nombre: string }

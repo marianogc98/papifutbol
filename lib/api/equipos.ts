@@ -133,6 +133,7 @@ export function useDeleteEquipo() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['equipos'] })
+      queryClient.invalidateQueries({ queryKey: ['tabla'] })
     },
   })
 }

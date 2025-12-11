@@ -24,7 +24,7 @@ export function useNoticias(tipo?: string) {
       if (tipo) {
         params.append('tipo', tipo)
       }
-      const response = await fetch(`?${params.toString()}`)
+      const response = await fetch(apiUrl(`api/noticias?${params.toString()}`))
       if (!response.ok) throw new Error('Error al obtener noticias')
       return response.json()
     },
@@ -36,7 +36,7 @@ export function useNoticia(id: string) {
   return useQuery<Noticia>({
     queryKey: ['noticia', id],
     queryFn: async () => {
-      const response = await fetch(`/${id}`)
+      const response = await fetch(apiUrl(`api/noticias/${id}`))
       if (!response.ok) throw new Error('Error al obtener noticia')
       return response.json()
     },
@@ -50,7 +50,7 @@ export function useCreateNoticia() {
 
   return useMutation({
     mutationFn: async (data: NoticiaFormData) => {
-      const response = await fetch('', {
+      const response = await fetch(apiUrl('api/noticias'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -75,7 +75,7 @@ export function useUpdateNoticia() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: NoticiaFormData }) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/noticias/${id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -101,7 +101,7 @@ export function useDeleteNoticia() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/${id}`, {
+      const response = await fetch(apiUrl(`api/noticias/${id}`), {
         method: 'DELETE',
       })
 

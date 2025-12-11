@@ -33,18 +33,7 @@ export function TablaGoleadores({ mostrarTodos = false }: TablaGoleadoresProps =
   }
 
   if (!goleadores || goleadores.length === 0) {
-    return (
-      <div className="w-full">
-        <div className="flex items-center justify-between mb-4 md:mb-6">
-          <h2 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>
-            Goleadores
-          </h2>
-        </div>
-        <div className={`${tableStyles.backgrounds.table} ${tableStyles.borders.table} p-8 text-center`}>
-          <p className={tableStyles.colors.muted}>No hay goleadores registrados</p>
-        </div>
-      </div>
-    )
+    return null
   }
 
   // Ordenar por total de goles (descendente)
@@ -87,11 +76,6 @@ export function TablaGoleadores({ mostrarTodos = false }: TablaGoleadoresProps =
                   <div className={`font-medium ${tableStyles.colors.primary} ${tableStyles.text.content.desktop}`}>
                     {goleador.jugador.nombre} {goleador.jugador.apellido}
                   </div>
-                  {goleador.jugador.numero && (
-                    <div className={`${tableStyles.text.secondary.desktop} ${tableStyles.colors.muted}`}>
-                      #{goleador.jugador.numero}
-                    </div>
-                  )}
                 </td>
                 <td className={tableStyles.padding.cell.desktop}>
                   {goleador.jugador.equipo ? (
@@ -163,7 +147,6 @@ export function TablaGoleadores({ mostrarTodos = false }: TablaGoleadoresProps =
                 ) : (
                   <div className={`${tableStyles.text.secondary.mobile} ${tableStyles.colors.muted}`}>
                     Sin equipo
-                    {goleador.jugador.numero && ` • #${goleador.jugador.numero}`}
                   </div>
                 )}
               </div>

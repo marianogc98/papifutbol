@@ -40,8 +40,6 @@ export type Partido = {
       apellido: string
       numero: number | null
     }
-    esPenal: boolean
-    esAutogol: boolean
   }>
   _count?: {
     goles: number
@@ -80,8 +78,6 @@ export type PartidoDetalle = Partido & {
       apellido: string
       numero: number | null
     }
-    esPenal: boolean
-    esAutogol: boolean
   }>
 }
 

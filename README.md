@@ -156,6 +156,11 @@ Ver `.env.example` para todas las variables necesarias.
 - Configurar `NEXTAUTH_URL` con tu dominio completo (https://)
 - Configurar `DATABASE_URL` correctamente
 
+**Variables para Resend (Email):**
+- `RESEND_API_KEY`: Tu API key de Resend (obtener en https://resend.com/api-keys)
+- `RESEND_FROM_EMAIL`: Email desde el cual se enviarán los mensajes (debe estar verificado en Resend)
+- `RESEND_TO_EMAIL`: Email al cual se enviarán las consultas de sponsors (opcional, por defecto usa admin@torneo.com)
+
 ### Base de Datos
 
 Ver `files/database-setup.md` para instrucciones detalladas.

@@ -43,17 +43,15 @@ export const resultadoSchema = z.object({
   goles: z.array(z.object({
     jugadorId: z.string(),
     equipoId: z.string(),
-    esPenal: z.boolean().default(false),
-    esAutogol: z.boolean().default(false),
   })).default([]),
 }).refine((data) => {
   // Si es jugado, la suma de goles debe coincidir
   if (data.estado === 'jugado' && data.goles.length > 0) {
     const golesLocal = data.goles.filter(
-      (g) => g.equipoId === data.equipoLocalId && !g.esAutogol
+      (g) => g.equipoId === data.equipoLocalId
     ).length
     const golesVisitante = data.goles.filter(
-      (g) => g.equipoId === data.equipoVisitanteId && !g.esAutogol
+      (g) => g.equipoId === data.equipoVisitanteId
     ).length
     return golesLocal === data.golesLocal && golesVisitante === data.golesVisitante
   }

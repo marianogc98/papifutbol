@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { useCreatePartido, useUpdatePartido, Partido } from '@/lib/api/partidos'
 import { useFechas } from '@/lib/api/fechas'
 import { useEquipos } from '@/lib/api/equipos'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { utcToTimeString } from '@/lib/utils/date'
 
 interface PartidoFormProps {
@@ -57,6 +57,27 @@ export function PartidoForm({ partido, fechaId: propFechaId, onSuccess }: Partid
   const fechaId = watch('fechaId')
   // Usar la fecha del prop si existe, o la del form
   const fechaIdFinal = propFechaId || fechaId || (partido?.fechaId)
+
+  // Resetear formulario cuando cambia el partido a editar
+  useEffect(() => {
+    if (partido) {
+      reset({
+        fechaId: partido.fechaId,
+        equipoLocalId: partido.equipoLocalId,
+        equipoVisitanteId: partido.equipoVisitanteId,
+        estado: partido.estado as any,
+        horaLocal: partido.fechaHora ? utcToTimeString(partido.fechaHora) : '',
+      })
+    } else {
+      reset({
+        fechaId: propFechaId || '',
+        equipoLocalId: '',
+        equipoVisitanteId: '',
+        estado: 'pendiente',
+        horaLocal: '',
+      })
+    }
+  }, [partido, propFechaId, reset])
 
   const onSubmit = async (data: PartidoFormData) => {
     setError('')

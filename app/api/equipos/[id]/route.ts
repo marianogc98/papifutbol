@@ -19,7 +19,6 @@ export async function GET(
             estado: 'activo',
           },
           orderBy: [
-            { numero: 'asc' },
             { apellido: 'asc' },
           ],
         },
@@ -43,7 +42,6 @@ export async function GET(
               estado: 'activo',
             },
             orderBy: [
-              { numero: 'asc' },
               { apellido: 'asc' },
             ],
           },

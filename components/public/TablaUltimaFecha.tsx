@@ -193,11 +193,14 @@ export function TablaUltimaFecha({
             <h2 className={`${tableStyles.text.title.mobile} font-bold ${tableStyles.colors.primary}`}>
               {fecha.nombre || `Fecha ${fecha.numero}`}
             </h2>
-            {fechasConPartidos.length > 1 && (
-              <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
-                {fechaIndex + 1} de {fechasConPartidos.length}
-              </p>
-            )}
+            <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
+              {new Date(fecha.fecha).toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -239,11 +242,14 @@ export function TablaUltimaFecha({
               <h1 className={`${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary} mb-2 inline-block`}>
                 {fecha.nombre || `Fecha ${fecha.numero}`}
               </h1>
-              {fechasConPartidos.length > 1 && (
-                <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-2`}>
-                  {fecha.numero} de {fechasConPartidos.length}
-                </p>
-              )}
+              <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-2`}>
+                {new Date(fecha.fecha).toLocaleDateString('es-ES', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
             </div>
             <Button
               variant="ghost"
@@ -273,11 +279,14 @@ export function TablaUltimaFecha({
           <h2 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>
             {fecha.nombre || `Fecha ${fecha.numero}`}
           </h2>
-          {fechasConPartidos.length > 1 && (
-            <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
-              {fechaIndex + 1} de {fechasConPartidos.length}
-            </p>
-          )}
+          <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
+            {new Date(fecha.fecha).toLocaleDateString('es-ES', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button

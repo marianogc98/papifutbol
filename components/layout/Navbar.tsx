@@ -14,6 +14,7 @@ export function Navbar() {
     { href: '/fixture', label: 'Fixture' },
     { href: '/goleadores', label: 'Goleadores' },
     { href: '/sponsors', label: 'Sponsors' },
+    { href: '/publicidad', label: 'Publicidad' },
   ]
 
   // Cerrar menú cuando cambia la ruta

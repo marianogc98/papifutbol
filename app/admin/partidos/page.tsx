@@ -160,11 +160,18 @@ export default function PartidosPage() {
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Seleccionar fecha</option>
-                    {fechas?.map((fecha) => (
-                      <option key={fecha.id} value={fecha.id}>
-                        {fecha.nombre || `Fecha ${fecha.numero}`}
-                      </option>
-                    ))}
+                    {fechas?.map((fecha) => {
+                      const fechaFormateada = new Date(fecha.fecha).toLocaleDateString('es-ES', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                      })
+                      return (
+                        <option key={fecha.id} value={fecha.id}>
+                          {fecha.nombre || `Fecha ${fecha.numero}`} - {fechaFormateada}
+                        </option>
+                      )
+                    })}
                   </select>
                   <p className="text-sm text-muted-foreground">
                     Selecciona una fecha para continuar con la creación del partido.
@@ -200,20 +207,29 @@ export default function PartidosPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead className="md:w-auto w-[60%]">Nombre</TableHead>
+                    <TableHead className="md:w-auto w-[25%]">Fecha</TableHead>
+                    <TableHead className="text-right md:w-auto w-[15%]">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {partidosOrdenados && partidosOrdenados.length > 0 ? (
-                    partidosOrdenados.map((partido) => (
+                    partidosOrdenados.map((partido) => {
+                      const fechaFormateada = partido.fechaHora 
+                        ? new Date(partido.fechaHora).toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit',
+                          })
+                        : '-'
+                      return (
                       <TableRow key={partido.id}>
                         <TableCell className="font-medium">
                           {partido.equipoLocal?.nombre || '-'} vs {partido.equipoVisitante?.nombre || '-'}
                         </TableCell>
-                        <TableCell>
-                          {partido.fechaHora ? formatDateUTC(partido.fechaHora) : '-'}
+                        <TableCell className="text-sm">
+                          <span className="md:hidden">{fechaFormateada}</span>
+                          <span className="hidden md:inline">{partido.fechaHora ? formatDateUTC(partido.fechaHora) : '-'}</span>
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
@@ -248,7 +264,8 @@ export default function PartidosPage() {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                      )
+                    })
                   ) : (
                     <TableRow>
                       <TableCell colSpan={3} className="text-center">

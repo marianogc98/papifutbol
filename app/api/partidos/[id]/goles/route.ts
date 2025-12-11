@@ -44,7 +44,6 @@ export async function PATCH(
       by: ['equipoId'],
       where: {
         partidoId: params.id,
-        esAutogol: false,
       },
       _count: true,
     })

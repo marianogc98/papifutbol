@@ -4,8 +4,6 @@ import { z } from 'zod'
 export const agregarGolSchema = z.object({
   jugadorId: z.string().min(1, 'Debe seleccionar un jugador'),
   equipoId: z.string().min(1, 'Debe seleccionar un equipo'),
-  esPenal: z.boolean().default(false),
-  esAutogol: z.boolean().default(false),
 })
 
 export type AgregarGolFormData = z.infer<typeof agregarGolSchema>

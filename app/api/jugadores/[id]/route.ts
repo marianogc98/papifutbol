@@ -35,11 +35,10 @@ export async function GET(
       )
     }
 
-    // Obtener goles del jugador (excluyendo autogoles)
+    // Obtener goles del jugador
     const goles = await prisma.gol.findMany({
       where: {
         jugadorId: params.id,
-        esAutogol: false,
       },
       include: {
         partido: {
@@ -86,27 +85,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    
-    // Convertir fechaNac de string ISO a Date si viene como string válido
-    let fechaNacConvertida: Date | null = null
-    
-    if (body.fechaNac && body.fechaNac !== null && body.fechaNac !== '') {
-      if (body.fechaNac instanceof Date) {
-        fechaNacConvertida = body.fechaNac
-      } else if (typeof body.fechaNac === 'string') {
-        const fecha = new Date(body.fechaNac)
-        if (!isNaN(fecha.getTime())) {
-          fechaNacConvertida = fecha
-        }
-      }
-    }
-    
-    const bodyWithDate = {
-      ...body,
-      fechaNac: fechaNacConvertida,
-    }
-    
-    const validatedData = jugadorSchema.parse(bodyWithDate)
+    const validatedData = jugadorSchema.parse(body)
 
     // Verificar que el jugador exista
     const jugadorExistente = await prisma.jugador.findUnique({
@@ -120,26 +99,6 @@ export async function PUT(
       )
     }
 
-    // Si cambia de equipo o número, verificar validaciones
-    if (validatedData.equipoId && validatedData.numero) {
-      const numeroEnUso = await prisma.jugador.findFirst({
-        where: {
-          equipoId: validatedData.equipoId,
-          numero: validatedData.numero,
-          estado: 'activo',
-          NOT: {
-            id: params.id,
-          },
-        },
-      })
-
-      if (numeroEnUso) {
-        return NextResponse.json(
-          { error: 'Ya existe un jugador activo con ese número en el equipo' },
-          { status: 400 }
-        )
-      }
-    }
 
     // Si se está cambiando la foto y había una anterior, eliminarla
     const fotoAnterior = jugadorExistente.foto
@@ -154,8 +113,6 @@ export async function PUT(
       data: {
         nombre: validatedData.nombre,
         apellido: validatedData.apellido,
-        numero: validatedData.numero,
-        fechaNac: validatedData.fechaNac,
         foto: nuevaFoto,
         estado: validatedData.estado,
         equipoId: validatedData.equipoId,

@@ -38,8 +38,6 @@ export default function EquipoDetailPage() {
     defaultValues: {
       nombre: '',
       apellido: '',
-      numero: undefined,
-      fechaNac: undefined,
       estado: 'activo',
       equipoId: equipo?.id || slugOrId,
     },
@@ -51,10 +49,6 @@ export default function EquipoDetailPage() {
       reset({
         nombre: editingJugador.nombre,
         apellido: editingJugador.apellido,
-        numero: editingJugador.numero || undefined,
-        fechaNac: editingJugador.fechaNac 
-          ? new Date(editingJugador.fechaNac).toISOString().split('T')[0]
-          : undefined,
         estado: editingJugador.estado as any,
         equipoId: equipo?.id || slugOrId,
       })
@@ -71,18 +65,6 @@ export default function EquipoDetailPage() {
         apellido: data.apellido,
         estado: data.estado,
         equipoId: equipo?.id || null,
-      }
-
-      // Agregar número solo si existe
-      if (data.numero !== undefined && data.numero !== null) {
-        submitData.numero = data.numero
-      }
-
-      // Agregar fecha solo si existe y convertir a ISO string
-      if (data.fechaNac) {
-        submitData.fechaNac = data.fechaNac instanceof Date 
-          ? data.fechaNac.toISOString() 
-          : new Date(data.fechaNac).toISOString()
       }
 
       if (editingJugador) {
@@ -260,34 +242,6 @@ export default function EquipoDetailPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="numero">Número de Camiseta</Label>
-                  <Input
-                    id="numero"
-                    type="number"
-                    {...register('numero', { valueAsNumber: true })}
-                    min="1"
-                    max="99"
-                    placeholder="Ej: 10"
-                  />
-                  {errors.numero && (
-                    <p className="text-sm text-destructive">{errors.numero.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="fechaNac">Fecha de Nacimiento</Label>
-                  <Input
-                    id="fechaNac"
-                    type="date"
-                    {...register('fechaNac')}
-                  />
-                  {errors.fechaNac && (
-                    <p className="text-sm text-destructive">{errors.fechaNac.message}</p>
-                  )}
-                </div>
-              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="estado">Estado *</Label>
@@ -347,8 +301,6 @@ export default function EquipoDetailPage() {
                 reset({
                   nombre: '',
                   apellido: '',
-                  numero: undefined,
-                  fechaNac: undefined,
                   estado: 'activo',
                   equipoId: equipo?.id || slugOrId,
                 })
@@ -395,11 +347,6 @@ export default function EquipoDetailPage() {
                       <div className={`font-medium ${tableStyles.text.content.mobile} md:${tableStyles.text.content.desktop} ${tableStyles.colors.primary} mb-1 break-words`}>
                         {jugador.apellido}
                       </div>
-                      {jugador.numero && (
-                        <div className={`${tableStyles.text.secondary.mobile} md:${tableStyles.text.secondary.desktop} font-semibold ${tableStyles.colors.secondary} mt-1`}>
-                          #{jugador.numero}
-                        </div>
-                      )}
                     </div>
                   </div>
                   {/* Botones de acción */}

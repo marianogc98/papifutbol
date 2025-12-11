@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { jugadorSchema, JugadorFormData } from '@/lib/validations/jugador'
 import { apiUrl } from '@/lib/utils/api'
@@ -37,10 +37,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
       ? {
           nombre: jugador.nombre,
           apellido: jugador.apellido,
-          numero: jugador.numero || undefined,
-          fechaNac: jugador.fechaNac
-            ? new Date(jugador.fechaNac)
-            : undefined,
           estado: jugador.estado as any,
           equipoId: jugador.equipoId || undefined,
           foto: jugador.foto || undefined,
@@ -48,8 +44,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
       : {
           nombre: '',
           apellido: '',
-          numero: undefined,
-          fechaNac: undefined,
           estado: 'activo',
           equipoId: undefined,
           foto: undefined,
@@ -64,10 +58,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
       reset({
         nombre: jugador.nombre,
         apellido: jugador.apellido,
-        numero: jugador.numero || undefined,
-        fechaNac: jugador.fechaNac
-          ? new Date(jugador.fechaNac)
-          : undefined,
         estado: jugador.estado as any,
         equipoId: jugador.equipoId || undefined,
         foto: jugador.foto || undefined,
@@ -76,8 +66,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
       reset({
         nombre: '',
         apellido: '',
-        numero: undefined,
-        fechaNac: undefined,
         estado: 'activo',
         equipoId: undefined,
         foto: undefined,
@@ -95,36 +83,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
         estado: data.estado,
         equipoId: data.equipoId || null,
         foto: data.foto || null,
-      }
-
-      // Agregar número solo si existe y es válido
-      if (data.numero !== undefined && data.numero !== null && !isNaN(Number(data.numero))) {
-        submitData.numero = Number(data.numero)
-      } else {
-        submitData.numero = null
-      }
-
-      // Agregar fecha solo si existe y convertir a ISO string
-      if (data.fechaNac && data.fechaNac !== null && data.fechaNac !== undefined) {
-        let fecha: Date
-        
-        if (data.fechaNac instanceof Date) {
-          fecha = data.fechaNac
-        } else if (typeof data.fechaNac === 'string') {
-          fecha = new Date(data.fechaNac)
-        } else {
-          fecha = new Date(data.fechaNac)
-        }
-        
-        // Verificar que la fecha sea válida
-        if (!isNaN(fecha.getTime())) {
-          // Asegurar que la fecha se envíe en formato ISO
-          submitData.fechaNac = fecha.toISOString()
-        } else {
-          submitData.fechaNac = null
-        }
-      } else {
-        submitData.fechaNac = null
       }
 
       if (jugador) {
@@ -167,87 +125,6 @@ export function JugadorForm({ jugador, onSuccess }: JugadorFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="numero">Número de Camiseta</Label>
-          <Input
-            id="numero"
-            type="number"
-            {...register('numero', { 
-              valueAsNumber: true,
-              setValueAs: (value) => {
-                if (value === '' || value === null || value === undefined) return undefined
-                const num = Number(value)
-                return isNaN(num) ? undefined : num
-              }
-            })}
-            min="1"
-            max="99"
-            placeholder="Ej: 10"
-          />
-          {errors.numero && (
-            <p className="text-sm text-destructive">{errors.numero.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="fechaNac">Fecha de Nacimiento</Label>
-          <Controller
-            name="fechaNac"
-            control={control}
-            render={({ field }) => {
-              // Convertir Date a string YYYY-MM-DD para el input
-              let value = ''
-              if (field.value) {
-                try {
-                  let fecha: Date
-                  if (field.value instanceof Date) {
-                    fecha = field.value
-                  } else if (typeof field.value === 'string') {
-                    // Si viene como string ISO, parsearlo correctamente
-                    fecha = new Date(field.value)
-                  } else {
-                    fecha = new Date(field.value)
-                  }
-                  
-                  if (!isNaN(fecha.getTime())) {
-                    // Usar UTC para evitar problemas de zona horaria
-                    const year = fecha.getUTCFullYear()
-                    const month = String(fecha.getUTCMonth() + 1).padStart(2, '0')
-                    const day = String(fecha.getUTCDate()).padStart(2, '0')
-                    value = `${year}-${month}-${day}`
-                  }
-                } catch (e) {
-                  // Si hay error al parsear, dejar value vacío
-                  value = ''
-                }
-              }
-              
-              return (
-                <Input
-                  id="fechaNac"
-                  type="date"
-                  value={value}
-                  onChange={(e) => {
-                    const inputValue = e.target.value
-                    if (inputValue && inputValue !== '') {
-                      // Convertir string YYYY-MM-DD a Date usando UTC para evitar problemas de zona horaria
-                      const fecha = new Date(inputValue + 'T12:00:00Z') // Usar mediodía UTC para evitar cambios de día
-                      field.onChange(fecha)
-                    } else {
-                      field.onChange(undefined)
-                    }
-                  }}
-                  onBlur={field.onBlur}
-                />
-              )
-            }}
-          />
-          {errors.fechaNac && (
-            <p className="text-sm text-destructive">{errors.fechaNac.message}</p>
-          )}
-        </div>
-      </div>
 
       <div className="space-y-2">
         <ImageUpload
