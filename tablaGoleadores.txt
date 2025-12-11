@@ -1,294 +1,61 @@
-Deployment failed: Command execution failed (exit code 1): docker exec rww04k4k80g48ogg4gookkk8 bash -c 'bash /artifacts/build.sh'
-2025-Dec-11 20:41:38.467948
-Error: #0 building with "default" instance using docker driver
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#1 [internal] load build definition from Dockerfile
-2025-Dec-11 20:41:38.467948
-#1 transferring dockerfile: 3.95kB done
-2025-Dec-11 20:41:38.467948
-#1 DONE 0.0s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#2 [internal] load metadata for docker.io/library/node:18-bullseye-slim
-2025-Dec-11 20:41:38.467948
-#2 DONE 0.9s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#3 [internal] load .dockerignore
-2025-Dec-11 20:41:38.467948
-#3 transferring context: 219B done
-2025-Dec-11 20:41:38.467948
-#3 DONE 0.0s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#4 [base 1/2] FROM docker.io/library/node:18-bullseye-slim@sha256:d69fb189fa7765636655db043a6a9e6be5ddf94bd1a8dc33fd0bcf4664606a9e
-2025-Dec-11 20:41:38.467948
-#4 DONE 0.0s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#5 [base 2/2] WORKDIR /app
-2025-Dec-11 20:41:38.467948
-#5 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#6 [runner  1/10] WORKDIR /app
-2025-Dec-11 20:41:38.467948
-#6 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#7 [runner  2/10] RUN addgroup --system --gid 1001 nodejs     && adduser --system --uid 1001 nextjs
-2025-Dec-11 20:41:38.467948
-#7 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#8 [internal] load build context
-2025-Dec-11 20:41:38.467948
-#8 transferring context: 1.93MB 0.1s done
-2025-Dec-11 20:41:38.467948
-#8 DONE 0.1s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#9 [deps 1/2] COPY package.json package-lock.json* ./
-2025-Dec-11 20:41:38.467948
-#9 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#10 [deps 2/2] RUN npm ci --ignore-scripts
-2025-Dec-11 20:41:38.467948
-#10 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#11 [builder 1/4] COPY --from=deps /app/node_modules ./node_modules
-2025-Dec-11 20:41:38.467948
-#11 CACHED
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#12 [builder 2/4] COPY . .
-2025-Dec-11 20:41:38.467948
-#12 DONE 0.1s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#13 [builder 3/4] RUN npx prisma generate
-2025-Dec-11 20:41:38.467948
-#13 1.998 Prisma schema loaded from prisma/schema.prisma
-2025-Dec-11 20:41:38.467948
-#13 2.578
-2025-Dec-11 20:41:38.467948
-#13 2.578 ✔ Generated Prisma Client (v5.22.0) to ./node_modules/@prisma/client in 183ms
-2025-Dec-11 20:41:38.467948
-#13 2.578
-2025-Dec-11 20:41:38.467948
-#13 2.578 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-2025-Dec-11 20:41:38.467948
-#13 2.578
-2025-Dec-11 20:41:38.467948
-#13 2.578 Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
-2025-Dec-11 20:41:38.467948
-#13 2.578
-2025-Dec-11 20:41:38.467948
-#13 2.787 npm notice
-2025-Dec-11 20:41:38.467948
-#13 2.787 npm notice New major version of npm available! 10.8.2 -> 11.7.0
-2025-Dec-11 20:41:38.467948
-#13 2.787 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
-2025-Dec-11 20:41:38.467948
-#13 2.787 npm notice To update run: npm install -g npm@11.7.0
-2025-Dec-11 20:41:38.467948
-#13 2.787 npm notice
-2025-Dec-11 20:41:38.467948
-#13 DONE 2.8s
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-#14 [builder 4/4] RUN npm run build
-2025-Dec-11 20:41:38.467948
-#14 0.266
-2025-Dec-11 20:41:38.467948
-#14 0.266 > papi-futbol@1.0.0 build
-2025-Dec-11 20:41:38.467948
-#14 0.266 > prisma generate && next build
-2025-Dec-11 20:41:38.467948
-#14 0.266
-2025-Dec-11 20:41:38.467948
-#14 0.898 Prisma schema loaded from prisma/schema.prisma
-2025-Dec-11 20:41:38.467948
-#14 1.466
-2025-Dec-11 20:41:38.467948
-#14 1.466 ✔ Generated Prisma Client (v5.22.0) to ./node_modules/@prisma/client in 158ms
-2025-Dec-11 20:41:38.467948
-#14 1.466
-2025-Dec-11 20:41:38.467948
-#14 1.466 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-2025-Dec-11 20:41:38.467948
-#14 1.466
-2025-Dec-11 20:41:38.467948
-#14 1.466 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
-2025-Dec-11 20:41:38.467948
-#14 1.466
-2025-Dec-11 20:41:38.467948
-#14 2.466 Attention: Next.js now collects completely anonymous telemetry regarding usage.
-2025-Dec-11 20:41:38.467948
-#14 2.467 This information is used to shape Next.js' roadmap and prioritize features.
-2025-Dec-11 20:41:38.467948
-#14 2.467 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-2025-Dec-11 20:41:38.467948
-#14 2.467 https://nextjs.org/telemetry
-2025-Dec-11 20:41:38.467948
-#14 2.467
-2025-Dec-11 20:41:38.467948
-#14 2.551   ▲ Next.js 14.2.33
-2025-Dec-11 20:41:38.467948
-#14 2.551
-2025-Dec-11 20:41:38.467948
-#14 2.641    Creating an optimized production build ...
-2025-Dec-11 20:41:38.467948
-#14 35.80  ✓ Compiled successfully
-2025-Dec-11 20:41:38.467948
-#14 35.81    Linting and checking validity of types ...
-2025-Dec-11 20:41:38.467948
-#14 40.24
-2025-Dec-11 20:41:38.467948
-#14 40.24 ./app/(public)/sponsors/page.tsx
-2025-Dec-11 20:41:38.467948
-#14 40.24 15:9  Warning: The 'sponsorsBronce' logical expression could make the dependencies of useEffect Hook (at line 27) change on every render. To fix this, wrap the initialization of 'sponsorsBronce' in its own useMemo() Hook.  react-hooks/exhaustive-deps
-2025-Dec-11 20:41:38.467948
-#14 40.24
-2025-Dec-11 20:41:38.467948
-#14 40.24 ./components/layout/Navbar.tsx
-2025-Dec-11 20:41:38.467948
-#14 40.24 53:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-2025-Dec-11 20:41:38.467948
-#14 40.24 93:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-2025-Dec-11 20:41:38.467948
-#14 40.24
-2025-Dec-11 20:41:38.467948
-#14 40.24 ./components/ui/Image.tsx
-2025-Dec-11 20:41:38.467948
-#14 40.24 42:7  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-2025-Dec-11 20:41:38.467948
-#14 40.24
-2025-Dec-11 20:41:38.467948
-#14 40.24 ./components/ui/image-upload.tsx
-2025-Dec-11 20:41:38.467948
-#14 40.24 121:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-2025-Dec-11 20:41:38.467948
-#14 40.24
-2025-Dec-11 20:41:38.467948
-#14 40.24 info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
-2025-Dec-11 20:41:38.467948
-#14 46.16 Failed to compile.
-2025-Dec-11 20:41:38.467948
-#14 46.16
-2025-Dec-11 20:41:38.467948
-#14 46.16 ./app/api/partidos/[id]/goles/individual/route.ts:105:13
-2025-Dec-11 20:41:38.467948
-#14 46.16 Type error: Object literal may only specify known properties, and 'numero' does not exist in type 'JugadorSelect<DefaultArgs>'.
-2025-Dec-11 20:41:38.467948
-#14 46.16
-2025-Dec-11 20:41:38.467948
-#14 46.16   103 |             nombre: true,
-2025-Dec-11 20:41:38.467948
-#14 46.16   104 |             apellido: true,
-2025-Dec-11 20:41:38.467948
-#14 46.16 > 105 |             numero: true,
-2025-Dec-11 20:41:38.467948
-#14 46.16       |             ^
-2025-Dec-11 20:41:38.467948
-#14 46.16   106 |           },
-2025-Dec-11 20:41:38.467948
-#14 46.16   107 |         },
-2025-Dec-11 20:41:38.467948
-#14 46.16   108 |         equipo: {
-2025-Dec-11 20:41:38.467948
-#14 46.22 Next.js build worker exited with code: 1 and signal: null
-2025-Dec-11 20:41:38.467948
+14 33.07
+2025-Dec-11 20:49:47.286687
+#14 33.07 ./components/ui/image-upload.tsx
+2025-Dec-11 20:49:47.286687
+#14 33.07 121:13  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+2025-Dec-11 20:49:47.286687
+#14 33.07
+2025-Dec-11 20:49:47.286687
+#14 33.07 info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+2025-Dec-11 20:49:47.286687
+#14 38.70 Failed to compile.
+2025-Dec-11 20:49:47.286687
+#14 38.70
+2025-Dec-11 20:49:47.286687
+#14 38.70 ./prisma/seed.ts:74:11
+2025-Dec-11 20:49:47.286687
+#14 38.70 Type error: Object literal may only specify known properties, and 'numero' does not exist in type 'Without<JugadorCreateInput, JugadorUncheckedCreateInput> & JugadorUncheckedCreateInput'.
+2025-Dec-11 20:49:47.286687
+#14 38.70
+2025-Dec-11 20:49:47.286687
+#14 38.70   72 |           nombre: jugadorData.nombre,
+2025-Dec-11 20:49:47.286687
+#14 38.70   73 |           apellido: jugadorData.apellido,
+2025-Dec-11 20:49:47.286687
+#14 38.70 > 74 |           numero: jugadorData.numero,
+2025-Dec-11 20:49:47.286687
+#14 38.70      |           ^
+2025-Dec-11 20:49:47.286687
+#14 38.70   75 |           estado: jugadorData.estado,
+2025-Dec-11 20:49:47.286687
+#14 38.70   76 |           equipoId: equipo.id,
+2025-Dec-11 20:49:47.286687
+#14 38.70   77 |         },
+2025-Dec-11 20:49:47.286687
+#14 38.75 Next.js build worker exited with code: 1 and signal: null
+2025-Dec-11 20:49:47.286687
 #14 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
-2025-Dec-11 20:41:38.467948
+2025-Dec-11 20:49:47.286687
 ------
-2025-Dec-11 20:41:38.467948
+2025-Dec-11 20:49:47.286687
 > [builder 4/4] RUN npm run build:
-2025-Dec-11 20:41:38.467948
-46.16 Type error: Object literal may only specify known properties, and 'numero' does not exist in type 'JugadorSelect<DefaultArgs>'.
-2025-Dec-11 20:41:38.467948
-46.16
-2025-Dec-11 20:41:38.467948
-46.16   103 |             nombre: true,
-2025-Dec-11 20:41:38.467948
-46.16   104 |             apellido: true,
-2025-Dec-11 20:41:38.467948
-46.16 > 105 |             numero: true,
-2025-Dec-11 20:41:38.467948
-46.16       |             ^
-2025-Dec-11 20:41:38.467948
-46.16   106 |           },
-2025-Dec-11 20:41:38.467948
-46.16   107 |         },
-2025-Dec-11 20:41:38.467948
-46.16   108 |         equipo: {
-2025-Dec-11 20:41:38.467948
-46.22 Next.js build worker exited with code: 1 and signal: null
-2025-Dec-11 20:41:38.467948
-------
-2025-Dec-11 20:41:38.467948
-2025-Dec-11 20:41:38.467948
-4 warnings found (use docker --debug to expand):
-2025-Dec-11 20:41:38.467948
-- LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 69)
-2025-Dec-11 20:41:38.467948
-- LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 70)
-2025-Dec-11 20:41:38.467948
-- LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 71)
-2025-Dec-11 20:41:38.467948
-- LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 72)
-2025-Dec-11 20:41:38.467948
-Dockerfile:51
-2025-Dec-11 20:41:38.467948
---------------------
-2025-Dec-11 20:41:38.467948
-49 |     COPY . .
-2025-Dec-11 20:41:38.467948
-50 |     RUN npx prisma generate
-2025-Dec-11 20:41:38.467948
-51 | >>> RUN npm run build
-2025-Dec-11 20:41:38.467948
-52 |
-2025-Dec-11 20:41:38.467948
-53 |     FROM base AS runner
-2025-Dec-11 20:41:38.467948
---------------------
-2025-Dec-11 20:41:38.467948
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
-2025-Dec-11 20:41:38.467948
-exit status 1
-2025-Dec-11 20:41:38.477830
-Error type: RuntimeException
-2025-Dec-11 20:41:38.490235
-Error code: 0
-2025-Dec-11 20:41:38.501662
-Location: /var/www/html/app/Traits/ExecuteRemoteCommand.php:237
-2025-Dec-11 20:41:38.514953
-Stack trace (first 5 lines):
-2025-Dec-11 20:41:38.525495
-#0 /var/www/html/app/Traits/ExecuteRemoteCommand.php(104): App\Jobs\ApplicationDeploymentJob->executeCommandWithProcess()
-2025-Dec-11 20:41:38.534715
-#1 /var/www/html/vendor/laravel/framework/src/Illuminate/Collections/Traits/EnumeratesValues.php(271): App\Jobs\ApplicationDeploymentJob->{closure:App\Traits\ExecuteRemoteCommand::execute_remote_command():71}()
-2025-Dec-11 20:41:38.543978
-#2 /var/www/html/app/Traits/ExecuteRemoteCommand.php(71): Illuminate\Support\Collection->each()
-2025-Dec-11 20:41:38.555545
-#3 /var/www/html/app/Jobs/ApplicationDeploymentJob.php(3121): App\Jobs\ApplicationDeploymentJob->execute_remote_command()
-2025-Dec-11 20:41:38.564468
-#4 /var/www/html/app/Jobs/ApplicationDeploymentJob.php(831): App\Jobs\ApplicationDeploymentJob->build_image()
-2025-Dec-11 20:41:38.575231
-========================================
-2025-Dec-11 20:41:38.590474
-Deployment failed. Removing the new version of your application.
-2025-Dec-11 20:41:39.095430
-Gracefully shutting down build container: rww04k4k80g48ogg4gookkk8
-2025-Dec-11 20:41:39.449078
-[CMD]: docker stop -t 30 rww04k4k80g48ogg4gookkk8
-2025-Dec-11 20:41:39.449078
-rww04k4k80g48ogg4gookkk8
-2025-Dec-11 20:41:39.579378
-[CMD]: docker rm -f rww04k4k80g48ogg4gookkk8
-2025-Dec-11 20:41:39.579378
-Error response from daemon: No such container: rww04k4k80g48ogg4gookkk8
+2025-Dec-11 20:49:47.286687
+38.70 Type error: Object literal may only specify known properties, and 'numero' does not exist in type 'Without<JugadorCreateInput, JugadorUncheckedCreateInput> & JugadorUncheckedCreateInput'.
+2025-Dec-11 20:49:47.286687
+38.70
+2025-Dec-11 20:49:47.286687
+38.70   72 |           nombre: jugadorData.nombre,
+2025-Dec-11 20:49:47.286687
+38.70   73 |           apellido: jugadorData.apellido,
+2025-Dec-11 20:49:47.286687
+38.70 > 74 |           numero: jugadorData.numero,
+2025-Dec-11 20:49:47.286687
+38.70      |           ^
+2025-Dec-11 20:49:47.286687
+38.70   75 |           estado: jugadorData.estado,
+2025-Dec-11 20:49:47.286687
+38.70   76 |           equipoId: equipo.id,
+2025-Dec-11 20:49:47.286687
+38.70   77 |         },
+2025-Dec-11 20:49:47.286687
+38.75 Next.js build worker exited with code: 1 and signal: null

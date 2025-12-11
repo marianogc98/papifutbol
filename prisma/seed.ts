@@ -55,10 +55,10 @@ async function main() {
 
   // Crear algunos jugadores de ejemplo
   const jugadores = [
-    { nombre: 'Juan', apellido: 'Pérez', numero: 10, equipoNombre: 'Equipo A', estado: 'activo' },
-    { nombre: 'Carlos', apellido: 'García', numero: 7, equipoNombre: 'Equipo A', estado: 'activo' },
-    { nombre: 'Luis', apellido: 'Martínez', numero: 9, equipoNombre: 'Equipo B', estado: 'activo' },
-    { nombre: 'Pedro', apellido: 'Rodríguez', numero: 11, equipoNombre: 'Equipo B', estado: 'activo' },
+    { nombre: 'Juan', apellido: 'Pérez', equipoNombre: 'Equipo A', estado: 'activo' },
+    { nombre: 'Carlos', apellido: 'García', equipoNombre: 'Equipo A', estado: 'activo' },
+    { nombre: 'Luis', apellido: 'Martínez', equipoNombre: 'Equipo B', estado: 'activo' },
+    { nombre: 'Pedro', apellido: 'Rodríguez', equipoNombre: 'Equipo B', estado: 'activo' },
   ]
 
   for (const jugadorData of jugadores) {
@@ -71,7 +71,6 @@ async function main() {
         data: {
           nombre: jugadorData.nombre,
           apellido: jugadorData.apellido,
-          numero: jugadorData.numero,
           estado: jugadorData.estado,
           equipoId: equipo.id,
         },

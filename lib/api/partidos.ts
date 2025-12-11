@@ -38,7 +38,6 @@ export type Partido = {
       id: string
       nombre: string
       apellido: string
-      numero: number | null
     }
   }>
   _count?: {
@@ -76,7 +75,6 @@ export type PartidoDetalle = Partido & {
       id: string
       nombre: string
       apellido: string
-      numero: number | null
     }
   }>
 }
