@@ -107,10 +107,10 @@ export default function PartidosPage() {
       // Ordenar por fechaHora si existe, sino por createdAt
       // Normalizar fechas para que partidos después de medianoche se ordenen correctamente
       const fechaA = a.fechaHora 
-        ? normalizarFechaHoraParaOrdenamiento(a.fechaHora, a.fecha?.fecha) 
+        ? normalizarFechaHoraParaOrdenamiento(a.fechaHora) 
         : new Date(a.createdAt).getTime()
       const fechaB = b.fechaHora 
-        ? normalizarFechaHoraParaOrdenamiento(b.fechaHora, b.fecha?.fecha) 
+        ? normalizarFechaHoraParaOrdenamiento(b.fechaHora) 
         : new Date(b.createdAt).getTime()
       return fechaB - fechaA
     })
