@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { tableStyles } from '@/lib/constants/tableStyles'
 import { Loader } from '@/components/ui/loader'
-import { formatDateUTC } from '@/lib/utils/date'
+import { formatDateUTC, normalizarFechaHoraParaOrdenamiento } from '@/lib/utils/date'
 
 interface TablaUltimaFechaProps {
   soloConPartidos?: boolean // Si true, solo muestra fechas con partidos (comportamiento home)
@@ -89,10 +89,13 @@ export function TablaUltimaFecha({
           const partidosDeFecha = todosPartidos.filter(p => p.fechaId === fecha.id)
           if (partidosDeFecha.length > 0) {
             // Ordenar partidos por fechaHora (del más temprano al más tarde)
+            // Normalizar fechas para que partidos después de medianoche se ordenen correctamente
             const partidosOrdenados = [...partidosDeFecha].sort((a, b) => {
-              // Si ambos tienen fechaHora, comparar por fechaHora
+              // Si ambos tienen fechaHora, comparar por fechaHora normalizada
               if (a.fechaHora && b.fechaHora) {
-                return new Date(a.fechaHora).getTime() - new Date(b.fechaHora).getTime()
+                const fechaA = normalizarFechaHoraParaOrdenamiento(a.fechaHora, fecha.fecha)
+                const fechaB = normalizarFechaHoraParaOrdenamiento(b.fechaHora, fecha.fecha)
+                return fechaA - fechaB
               }
               // Si solo uno tiene fechaHora, el que tiene fechaHora va primero
               if (a.fechaHora && !b.fechaHora) return -1
@@ -112,9 +115,12 @@ export function TablaUltimaFecha({
       return fechasOrdenadas.map(fecha => {
         const partidosDeFecha = todosPartidos?.filter(p => p.fechaId === fecha.id) || []
         // Ordenar partidos por fechaHora (del más temprano al más tarde)
+        // Normalizar fechas para que partidos después de medianoche se ordenen correctamente
         const partidosOrdenados = [...partidosDeFecha].sort((a, b) => {
           if (a.fechaHora && b.fechaHora) {
-            return new Date(a.fechaHora).getTime() - new Date(b.fechaHora).getTime()
+            const fechaA = normalizarFechaHoraParaOrdenamiento(a.fechaHora, fecha.fecha)
+            const fechaB = normalizarFechaHoraParaOrdenamiento(b.fechaHora, fecha.fecha)
+            return fechaA - fechaB
           }
           if (a.fechaHora && !b.fechaHora) return -1
           if (!a.fechaHora && b.fechaHora) return 1

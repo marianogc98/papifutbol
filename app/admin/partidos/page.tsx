@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { usePartidos, useDeletePartido, Partido } from '@/lib/api/partidos'
 import { PartidoForm } from '@/components/admin/PartidoForm'
 import { useFechas } from '@/lib/api/fechas'
-import { formatDateTimeUTC, formatDateUTC } from '@/lib/utils/date'
+import { formatDateTimeUTC, formatDateUTC, normalizarFechaHoraParaOrdenamiento } from '@/lib/utils/date'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -105,11 +105,12 @@ export default function PartidosPage() {
     if (!partidos) return []
     return [...partidos].sort((a, b) => {
       // Ordenar por fechaHora si existe, sino por createdAt
+      // Normalizar fechas para que partidos después de medianoche se ordenen correctamente
       const fechaA = a.fechaHora 
-        ? new Date(a.fechaHora).getTime() 
+        ? normalizarFechaHoraParaOrdenamiento(a.fechaHora, a.fecha?.fecha) 
         : new Date(a.createdAt).getTime()
       const fechaB = b.fechaHora 
-        ? new Date(b.fechaHora).getTime() 
+        ? normalizarFechaHoraParaOrdenamiento(b.fechaHora, b.fecha?.fecha) 
         : new Date(b.createdAt).getTime()
       return fechaB - fechaA
     })

@@ -160,3 +160,33 @@ export function dateToUTC(dateString: string): Date {
   return new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
 }
 
+/**
+ * Normaliza una fechaHora para ordenamiento considerando que partidos después de medianoche
+ * pertenecen a la "noche" del día anterior. Si la hora es antes de las 6 AM, se trata como
+ * si fuera del día anterior (sumando 24 horas) para efectos de ordenamiento.
+ * 
+ * Ejemplo: Un partido a las 00:30 del 16/01 se ordena como si fuera 24:30 del 15/01
+ * 
+ * @param fechaHora - Date o string de la fecha/hora del partido
+ * @param fechaTorneo - Date o string de la fecha del torneo (día base)
+ * @returns Timestamp normalizado para comparación
+ */
+export function normalizarFechaHoraParaOrdenamiento(
+  fechaHora: Date | string | null | undefined,
+  fechaTorneo?: Date | string
+): number {
+  if (!fechaHora) return 0
+  
+  const date = typeof fechaHora === 'string' ? new Date(fechaHora) : fechaHora
+  const horaUTC = date.getUTCHours()
+  
+  // Si la hora es antes de las 6 AM (00:00 - 05:59), tratarla como parte del día anterior
+  // Sumamos 24 horas al timestamp para que se ordene después de los partidos del día anterior
+  if (horaUTC < 6) {
+    // Sumar 24 horas (86400000 ms) al timestamp
+    return date.getTime() + 86400000
+  }
+  
+  return date.getTime()
+}
+
