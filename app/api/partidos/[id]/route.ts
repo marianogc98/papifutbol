@@ -46,7 +46,6 @@ export async function GET(
                 id: true,
                 nombre: true,
                 apellido: true,
-                numero: true,
               },
             },
           },

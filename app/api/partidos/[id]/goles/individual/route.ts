@@ -102,7 +102,6 @@ export async function POST(
             id: true,
             nombre: true,
             apellido: true,
-            numero: true,
           },
         },
         equipo: {
