@@ -69,10 +69,13 @@ export default function SponsorsPage() {
                           unoptimized
                         />
                       ) : (
-                        <img
+                        <Image
                           src={sponsor.imagen}
                           alt={sponsor.titulo}
+                          width={200}
+                          height={150}
                           className="w-full h-auto object-contain max-h-32"
+                          unoptimized
                         />
                       )
                     ) : (

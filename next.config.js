@@ -4,7 +4,16 @@ const nextConfig = {
   swcMinify: true,
   output: 'standalone', // Para Docker
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
     unoptimized: false,
   },
   // Para producción en VPS

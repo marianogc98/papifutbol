@@ -118,10 +118,13 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
                 unoptimized
               />
             ) : (
-              <img
+              <Image
                 src={currentPublicidad.imagen}
                 alt={currentPublicidad.titulo}
+                width={config.width}
+                height={config.height}
                 className={config.className}
+                unoptimized
               />
             )
           ) : (
@@ -144,10 +147,13 @@ export function PublicidadBanner({ posicion, className = '' }: PublicidadBannerP
                 unoptimized
               />
             ) : (
-              <img
+              <Image
                 src={currentPublicidad.imagen}
                 alt={currentPublicidad.titulo}
+                width={config.width}
+                height={config.height}
                 className={config.className}
+                unoptimized
               />
             )
           ) : (
