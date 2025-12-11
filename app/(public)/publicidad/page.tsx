@@ -77,120 +77,110 @@ export default function PublicidadPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-8">
-        {/* Título de la página */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Publicidad</h1>
-          <p className="text-muted-foreground text-lg">
-            Oportunidades de publicidad y patrocinio
-          </p>
-        </div>
 
         {/* Planes de Publicidad con Cards */}
-        <div>
-          <h2 className="text-3xl font-bold text-center mb-2">Planes de Publicidad</h2>
-          <p className="text-center text-muted-foreground mb-6">
-            Precios con descuento válidos por 15 días
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-2">Planes de Publicidad</h1>
+          <p className="text-lg text-muted-foreground mb-8">
+            Oportunidades de publicidad
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {/* Plan Oro */}
-            <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300 hover:shadow-xl transition-shadow">
+            <Card className="bg-gradient-to-br from-yellow-50 via-yellow-100 to-yellow-50 border-2 border-yellow-300 hover:border-yellow-400 hover:shadow-2xl hover:shadow-yellow-300/30 hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="text-center pb-4">
-                <div className="text-5xl mb-2">🥇</div>
-                <CardTitle className="text-2xl font-bold text-yellow-900">Plan Oro</CardTitle>
-                <CardDescription className="text-yellow-700 font-medium">
+                <div className="text-6xl mb-3">🥇</div>
+                <CardTitle className="text-3xl font-bold text-yellow-900">Plan Oro</CardTitle>
+                <CardDescription className="text-yellow-800 font-semibold text-base mt-2">
                   Banner Principal (Hero)
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center space-y-2">
-                  <div>
-                    <p className="text-sm text-muted-foreground">1 mes</p>
-                    <p className="text-2xl font-bold text-gray-800">$270.000</p>
+              <CardContent className="space-y-4 pb-6">
+                <div className="text-center space-y-3">
+                  <div className="rounded-lg p-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">1 mes</p>
+                    <p className="text-2xl font-bold text-gray-800 mt-1">$270.000</p>
                   </div>
-                  <div className="pt-2 border-t border-yellow-300">
-                    <p className="text-sm text-muted-foreground">Duración del torneo</p>
-                    <p className="text-3xl font-bold text-[#852024]">$640.000</p>
+                  <div className="bg-white/80 rounded-lg p-4 ">
+                    <Badge className="bg-yellow-400 text-white mb-2 text-xs">PROMOCIÓN</Badge>
+                    <p className="text-xs text-yellow-900 font-semibold uppercase">3 Meses</p>
+                    <p className="text-4xl font-extrabold text-yellow-900 mt-1">$640.000</p>
                   </div>
                 </div>
-                <Badge className="w-full justify-center bg-yellow-500 text-yellow-900 hover:bg-yellow-600">
-                  Más Popular
-                </Badge>
               </CardContent>
             </Card>
 
             {/* Plan Plata */}
-            <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 hover:shadow-xl transition-shadow">
+            <Card className="bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 border-2 border-gray-400 hover:border-gray-500 hover:shadow-2xl hover:shadow-gray-400/30 hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="text-center pb-4">
-                <div className="text-5xl mb-2">🥈</div>
-                <CardTitle className="text-2xl font-bold text-gray-900">Plan Plata</CardTitle>
-                <CardDescription className="text-gray-700 font-medium">
-                  Banner Secundario (Footer)
+                <div className="text-6xl mb-3">🥈</div>
+                <CardTitle className="text-3xl font-bold text-gray-900">Plan Plata</CardTitle>
+                <CardDescription className="text-gray-800 font-semibold text-base mt-2">
+                  Banner Secundario (Pie de página)
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center space-y-2">
-                  <div>
-                    <p className="text-sm text-muted-foreground">1 mes</p>
-                    <p className="text-2xl font-bold text-gray-800">$180.000</p>
+              <CardContent className="space-y-4 pb-6">
+                <div className="text-center space-y-3">
+                  <div className="rounded-lg p-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">1 mes</p>
+                    <p className="text-2xl font-bold text-gray-800 mt-1">$180.000</p>
                   </div>
-                  <div className="pt-2 border-t border-gray-300">
-                    <p className="text-sm text-muted-foreground">Duración del torneo</p>
-                    <p className="text-3xl font-bold text-[#852024]">$400.000</p>
+                  <div className="bg-white/80 rounded-lg p-4">
+                    <Badge className="bg-gray-600 text-white mb-2 text-xs">PROMOCIÓN</Badge>
+                    <p className="text-xs text-gray-900 font-semibold uppercase">3 Meses</p>
+                    <p className="text-4xl font-extrabold text-gray-900 mt-1">$400.000</p>
                   </div>
                 </div>
-                <Badge className="w-full justify-center bg-gray-500 text-white hover:bg-gray-600">
-                  Recomendado
-                </Badge>
               </CardContent>
             </Card>
 
             {/* Plan Bronce */}
-            <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 hover:shadow-xl transition-shadow">
+            <Card className="bg-gradient-to-br from-orange-50 via-orange-100 to-orange-50 border-2 border-orange-300 hover:border-orange-400 hover:shadow-2xl hover:shadow-orange-300/30 hover:-translate-y-1 transition-all duration-300">
               <CardHeader className="text-center pb-4">
-                <div className="text-5xl mb-2">🥉</div>
-                <CardTitle className="text-2xl font-bold text-orange-900">Plan Bronce</CardTitle>
-                <CardDescription className="text-orange-700 font-medium">
+                <div className="text-6xl mb-3">🥉</div>
+                <CardTitle className="text-3xl font-bold text-orange-900">Plan Bronce</CardTitle>
+                <CardDescription className="text-orange-800 font-semibold text-base mt-2">
                   Página de Sponsors
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center space-y-2">
-                  <div>
-                    <p className="text-sm text-muted-foreground">1 mes</p>
-                    <p className="text-2xl font-bold text-gray-800">$80.000</p>
+              <CardContent className="space-y-4 pb-6">
+                <div className="text-center space-y-3">
+                  <div className="rounded-lg p-3">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">1 mes</p>
+                    <p className="text-2xl font-bold text-gray-800 mt-1">$80.000</p>
                   </div>
-                  <div className="pt-2 border-t border-orange-300">
-                    <p className="text-sm text-muted-foreground">Duración del torneo</p>
-                    <p className="text-3xl font-bold text-[#852024]">$200.000</p>
+                  <div className="bg-white/80 rounded-lg p-4">
+                    <Badge className="bg-orange-600 text-white mb-2 text-xs">PROMOCIÓN</Badge>
+                    <p className="text-xs text-orange-900 font-semibold uppercase">3 Meses</p>
+                    <p className="text-4xl font-extrabold text-orange-900 mt-1">$200.000</p>
                   </div>
                 </div>
-                <Badge className="w-full justify-center bg-orange-500 text-white hover:bg-orange-600">
-                  Accesible
-                </Badge>
               </CardContent>
             </Card>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-            <p className="text-sm text-blue-900 text-center">
-              <strong>Incluye:</strong> Métricas reales de rendimiento (impresiones / clics / CTR) y presencia en las páginas principales del torneo.
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-4">
+            <p className="text-sm text-blue-900 text-left">
+              <strong className="text-base">Incluye:</strong> Métricas de rendimiento (impresiones / clics / CTR) y presencia en las páginas principales del torneo.
             </p>
           </div>
+          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+            <p className="text-xs text-amber-700 font-semibold text-left">
+              Las promociones de 3 meses son válidas hasta finalizar el torneo.
+            </p>
+          </div>
+
         </div>
 
         {/* Formulario de Contacto */}
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle>¿Quieres ser sponsor?</CardTitle>
+            <CardTitle>¿Querés ser sponsor?</CardTitle>
             <CardDescription>
-              Apoya nuestro torneo y llega a miles de aficionados
+              Contactanos para contratar el plan que desees.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-6">
-              Contáctanos para conocer nuestros planes de publicidad y patrocinio.
-            </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -263,7 +253,6 @@ export default function PublicidadPage() {
                   {...register('mensaje')}
                   rows={5}
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Cuéntanos sobre tu empresa y cómo te gustaría participar..."
                   disabled={isSubmitting}
                 />
                 {errors.mensaje && (
@@ -273,11 +262,10 @@ export default function PublicidadPage() {
 
               {submitStatus && (
                 <div
-                  className={`p-4 rounded-md ${
-                    submitStatus.type === 'success'
-                      ? 'bg-green-50 text-green-900 border border-green-200'
-                      : 'bg-red-50 text-red-900 border border-red-200'
-                  }`}
+                  className={`p-4 rounded-md ${submitStatus.type === 'success'
+                    ? 'bg-green-50 text-green-900 border border-green-200'
+                    : 'bg-red-50 text-red-900 border border-red-200'
+                    }`}
                 >
                   <p className="text-sm">{submitStatus.message}</p>
                 </div>

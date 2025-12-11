@@ -193,12 +193,10 @@ export function TablaUltimaFecha({
             <h2 className={`${tableStyles.text.title.mobile} font-bold ${tableStyles.colors.primary}`}>
               {fecha.nombre || `Fecha ${fecha.numero}`}
             </h2>
-            <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
+            <p className="text-gray-500 text-sm mt-1">
               {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
+                day: '2-digit',
+                month: '2-digit',
               })}
             </p>
           </div>
@@ -242,12 +240,10 @@ export function TablaUltimaFecha({
               <h1 className={`${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary} mb-2 inline-block`}>
                 {fecha.nombre || `Fecha ${fecha.numero}`}
               </h1>
-              <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-2`}>
+              <p className="text-gray-500 text-sm mt-2">
                 {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
+                  day: '2-digit',
+                  month: '2-digit',
                 })}
               </p>
             </div>
@@ -279,12 +275,10 @@ export function TablaUltimaFecha({
           <h2 className={`${tableStyles.text.title.mobile} md:${tableStyles.text.title.desktop} font-bold ${tableStyles.colors.primary}`}>
             {fecha.nombre || `Fecha ${fecha.numero}`}
           </h2>
-          <p className={`${tableStyles.text.content.mobile} ${tableStyles.colors.muted} mt-1`}>
+          <p className="text-gray-500 text-sm mt-1">
             {new Date(fecha.fecha).toLocaleDateString('es-ES', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
+              day: '2-digit',
+              month: '2-digit',
             })}
           </p>
         </div>

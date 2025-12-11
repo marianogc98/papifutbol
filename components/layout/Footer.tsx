@@ -24,24 +24,17 @@ export function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Contacto</h3>
             <div className="space-y-2 text-white text-sm">
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>+54 9 11 1234-5678</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>contacto@clublucasvazquez.com</span>
-              </div>
+
               <div className="flex items-center gap-3 mt-4">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/PapiFutbolDelIngeniero"
                   className="text-white hover:opacity-80 transition-opacity"
                   aria-label="Facebook"
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
                 <a
-                  href="#"
+                  href="https://instagram.com/papi_futbol"
                   className="text-white hover:opacity-80 transition-opacity"
                   aria-label="Instagram"
                 >

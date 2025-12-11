@@ -8,9 +8,30 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Papi Fútbol - Torneo 2025',
-  description: 'Sistema de gestión de torneo de fútbol 5 con sistema de vidas',
+  description: 'Torneo de Papi Fútbol temporada 2025.',
   icons: {
     icon: '/images/favicon.ico',
+  },
+  openGraph: {
+    title: 'Papi Fútbol - Torneo 2025',
+    description: 'Torneo de Papi Fútbol temporada 2025.',
+    type: 'website',
+    locale: 'es_AR',
+    siteName: 'Papi Fútbol',
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Papi Fútbol - Torneo 2025',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Papi Fútbol - Torneo 2025',
+    description: 'Torneo de Papi Fútbol temporada 2025.',
+    images: ['/images/logo.png'],
   },
 }
 
