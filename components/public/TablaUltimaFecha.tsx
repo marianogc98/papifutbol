@@ -38,13 +38,19 @@ export function TablaUltimaFecha({
     
     let viernesRelevante: Date
     
-    // Viernes, sábado, domingo, lunes: mostrar el último viernes pasado
-    if (diaSemana === 5 || diaSemana === 6 || diaSemana === 0 || diaSemana === 1) {
-      // Último viernes pasado
+    // Viernes, martes, miércoles, jueves: mostrar el viernes de ese día o próximo viernes
+    if (diaSemana === 5 || diaSemana === 2 || diaSemana === 3 || diaSemana === 4) {
       if (diaSemana === 5) {
-        // Si es viernes, mostrar el viernes pasado (hace 7 días)
-        viernesRelevante = new Date(año, mes, dia - 7)
-      } else if (diaSemana === 6) {
+        // Si es viernes, mostrar el viernes de ese día
+        viernesRelevante = new Date(año, mes, dia)
+      } else {
+        // Martes, miércoles, jueves: mostrar el próximo viernes
+        const diasHastaViernes = 5 - diaSemana // Días a avanzar para llegar al viernes
+        viernesRelevante = new Date(año, mes, dia + diasHastaViernes)
+      }
+    } else {
+      // Sábado, domingo, lunes: mostrar el último viernes pasado
+      if (diaSemana === 6) {
         // Si es sábado, mostrar el viernes pasado (hace 1 día)
         viernesRelevante = new Date(año, mes, dia - 1)
       } else if (diaSemana === 0) {
@@ -54,10 +60,6 @@ export function TablaUltimaFecha({
         // Si es lunes, mostrar el viernes pasado (hace 3 días)
         viernesRelevante = new Date(año, mes, dia - 3)
       }
-    } else {
-      // Martes, miércoles, jueves: mostrar el próximo viernes
-      const diasHastaViernes = 5 - diaSemana // Días a avanzar para llegar al viernes
-      viernesRelevante = new Date(año, mes, dia + diasHastaViernes)
     }
     
     // Normalizar a UTC 00:00:00 para comparar solo la fecha
